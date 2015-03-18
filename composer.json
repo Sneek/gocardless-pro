@@ -1,0 +1,28 @@
+{
+    "name": "sneek/gocardless-pro",
+    "description": "A client for the GoCardless Pro API",
+    "authors": [
+        {
+            "name": "Cristian Giordano",
+            "email": "developers@sneekdigital.co.uk"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0",
+        "guzzlehttp/guzzle": "5.*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "GoCardless\\Pro\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "GoCardless\\Pro\\Tests\\": "tests/"
+        }
+    },
+    "minimum-stability": "stable"
+}
