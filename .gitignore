@@ -5,3 +5,4 @@ composer.lock
 .idea/
 npm-debug.log
 config.php
+coverage/
