@@ -60,6 +60,10 @@ trait Fixtures
         return $account;
     }
 
+    /**
+     * @param Customer $customer
+     * @return CustomerBankAccount
+     */
     public function get_customer_full_bank_account(Customer $customer = null)
     {
         $customer = $customer ?: $this->get_full_customer();
@@ -69,6 +73,10 @@ trait Fixtures
         return $account;
     }
 
+    /**
+     * @param Creditor $creditor
+     * @return CreditorBankAccount
+     */
     public function get_creditor_bank_account(Creditor $creditor = null)
     {
         $creditor = $creditor ?: $this->get_full_creditor();
@@ -80,6 +88,10 @@ trait Fixtures
         return $account;
     }
 
+    /**
+     * @param Creditor $creditor
+     * @return CreditorBankAccount
+     */
     public function get_creditor_full_bank_account(Creditor $creditor = null)
     {
         $creditor = $creditor ?: $this->get_full_creditor();
@@ -91,6 +103,9 @@ trait Fixtures
         return $account;
     }
 
+    /**
+     * @return array
+     */
     public function basic_customer_details()
     {
         return [
@@ -104,6 +119,9 @@ trait Fixtures
         ];
     }
 
+    /**
+     * @return array
+     */
     public function full_customer_details()
     {
         return array_merge($this->basic_customer_details(), [

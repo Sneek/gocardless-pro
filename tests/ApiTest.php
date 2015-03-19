@@ -5,6 +5,8 @@ use GoCardless\Pro\Models\Creditor;
 use GoCardless\Pro\Models\CreditorBankAccount;
 use GoCardless\Pro\Models\Customer;
 use GoCardless\Pro\Models\CustomerBankAccount;
+use GoCardless\Pro\Models\Mandate;
+use GoCardless\Pro\Models\Payment;
 use GuzzleHttp\Client;
 
 class ApiTest extends \PHPUnit_Framework_TestCase
@@ -83,6 +85,8 @@ class ApiTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('GoCardless\Pro\Models\Creditor', $new);
         $this->assertEquals($old->toArray(), $new->toArray());
+
+        return $new;
     }
 
     /** @depends it_can_create_a_creditor */
@@ -103,7 +107,7 @@ class ApiTest extends \PHPUnit_Framework_TestCase
 
         return $account;
     }
-    
+
     /** @test */
     function it_can_list_creditor_bank_accounts()
     {
@@ -117,7 +121,7 @@ class ApiTest extends \PHPUnit_Framework_TestCase
     }
 
     /** @test */
-    function it_can_limit_creditor_bank_accounts()
+    function it_can_limit_the_number_of_creditor_bank_accounts()
     {
         $this->guardAgainstSmallNumberOfCreditorBankAccounts();
 
@@ -125,7 +129,7 @@ class ApiTest extends \PHPUnit_Framework_TestCase
     }
 
     /** @depends test_it_can_create_creditor_bank_account */
-    function test_it_can_get_a_creditor_bank_account(CreditorBankAccount $old)
+    function test_it_can_get_a_single_creditor_bank_account(CreditorBankAccount $old)
     {
         $new = $this->api->getCreditorBankAccount($old->getId());
 
@@ -182,7 +186,7 @@ class ApiTest extends \PHPUnit_Framework_TestCase
     }
 
     /** @test */
-    function it_can_limit_the_number_of_returned_customers()
+    function it_can_limit_the_number_of_customers()
     {
         $this->guardAgainstSmallNumberOfCustomerAccounts();
 
@@ -190,7 +194,7 @@ class ApiTest extends \PHPUnit_Framework_TestCase
     }
 
     /** @depends it_can_create_a_customer */
-    function test_it_can_find_a_single_customer(Customer $old)
+    function test_it_can_get_a_single_customer(Customer $old)
     {
         $new = $this->api->getCustomer($old->getId());
 
@@ -204,7 +208,7 @@ class ApiTest extends \PHPUnit_Framework_TestCase
         $account = $this->get_customer_bank_account($customer);
 
         $account = $this->api->createCustomerBankAccount($account);
-        
+
         $this->assertNotNull($account->getId());
         $this->assertNotNull($account->getCreatedAt());
         $this->assertNotNull($account->getAccountNumberEnding());
@@ -216,7 +220,7 @@ class ApiTest extends \PHPUnit_Framework_TestCase
 
         return $account;
     }
-    
+
     /** @test */
     function it_can_list_customer_bank_accounts()
     {
@@ -259,8 +263,215 @@ class ApiTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($account->isDisabled());
     }
 
+    /**
+     * @depends test_it_can_create_a_customer_bank_account
+     * @depends test_it_can_get_a_single_creditor
+     */
+    function test_it_can_create_a_mandate(CustomerBankAccount $customerBankAccount, Creditor $creditor)
+    {
+        $mandate = new Mandate($customerBankAccount, $creditor);
+
+        $mandate = $this->api->createMandate($mandate);
+
+        $this->assertTrue($mandate->isPendingSubmission());
+        $this->assertNotNull($mandate->getId());
+        $this->assertNotNull($mandate->getCreatedAt());
+        $this->assertNotNull($mandate->getReference());
+        $this->assertNotNull($mandate->getNextPossibleChargeDate());
+
+        return $mandate;
+    }
+
     /** @test */
-    function it_throws_validation_exception_on_validation_failed_api_error()
+    function it_can_lists_mandates()
+    {
+        $mandates = $this->api->listMandates();
+
+        $this->assertInternalType('array', $mandates);
+        foreach ($mandates as $mandate)
+        {
+            $this->assertInstanceOf('GoCardless\Pro\Models\Mandate', $mandate);
+        }
+    }
+
+    /** @test */
+    function it_can_limit_the_number_of_mandates()
+    {
+        $this->guardAgainstSmallNumberOfMandates();
+
+        $this->assertCount(3, $this->api->listMandates(3));
+    }
+
+    /** @depends it_can_create_a_customer */
+    function test_it_can_list_customer_mandates(Customer $customer)
+    {
+        $mandates = $this->api->listMandatesForCustomer($customer->getId());
+
+        $this->assertInternalType('array', $mandates);
+        foreach ($mandates as $mandate)
+        {
+            $this->assertInstanceOf('GoCardless\Pro\Models\Mandate', $mandate);
+        }
+    }
+
+    /**
+     * @depends it_can_create_a_customer
+     * @depends test_it_can_create_a_customer_bank_account
+     * @depends test_it_can_get_a_single_creditor
+     */
+    function test_it_can_limit_the_number_of_customer_mandates(Customer $customer, CustomerBankAccount $customerBankAccount, Creditor $creditor)
+    {
+        $mandate = new Mandate($customerBankAccount, $creditor);
+        $this->api->createMandate($mandate);
+        $this->api->createMandate($mandate);
+        $this->api->createMandate($mandate);
+        $this->api->createMandate($mandate);
+        $this->api->createMandate($mandate);
+
+        $this->assertcount(3, $this->api->listMandatesForCustomer($customer->getId(), 3));
+    }
+
+    /** @depends test_it_can_create_a_mandate */
+    function test_it_can_get_a_single_mandate(Mandate $old)
+    {
+        $new = $this->api->getMandate($old->getId());
+
+        $this->assertEquals($old->toArray(), $new->toArray());
+    }
+
+    /** @depends test_it_can_create_a_mandate */
+    function test_it_can_disable_a_mandate(Mandate $mandate)
+    {
+        $mandate = $this->api->disableMandate($mandate->getId());
+
+        $this->assertTrue($mandate->isCancelled());
+        $this->assertNull($mandate->getNextPossibleChargeDate());
+
+        return $mandate;
+    }
+
+    /** @depends test_it_can_disable_a_mandate */
+    function test_it_can_reinstate_a_disabled_mandate(Mandate $mandate)
+    {
+        $mandate = $this->api->reinstateMandate($mandate->getId());
+
+        $this->assertFalse($mandate->isCancelled());
+        $this->assertTrue($mandate->isPendingSubmission());
+        $this->assertNotNull($mandate->getNextPossibleChargeDate());
+    }
+
+    /** @depends test_it_can_create_a_mandate */
+    function test_it_can_create_a_payment(Mandate $mandate)
+    {
+        $payment = (new Payment())->collect(1000, 'GBP')->using($mandate);
+
+        $payment = $this->api->createPayment($payment);
+
+        $this->assertInstanceOf('GoCardless\Pro\Models\Payment', $payment);
+        $this->assertNotNull($payment->getId());
+        $this->assertNotNull($payment->getCreatedAt());
+        $this->assertNotNull($payment->getChargeDate());
+        $this->assertTrue($payment->isPendingSubmission());
+        $this->assertSame(1000, $payment->getAmount());
+        $this->assertSame('GBP', $payment->getCurrency());
+
+        return $payment;
+    }
+
+    /** @depends test_it_can_create_a_payment */
+    function test_it_can_get_a_single_payment(Payment $old)
+    {
+        $new = $this->api->getPayment($old->getId());
+
+        $this->assertEquals($old->toArray(), $new->toArray());
+
+        return $new;
+    }
+
+    /** @depends test_it_can_get_a_single_payment */
+    function test_it_can_cancel_payments(Payment $payment)
+    {
+        $payment = $this->api->cancelPayment($payment->getId());
+
+        $this->assertTrue($payment->isCancelled());
+
+        return $payment;
+    }
+
+    /** @group Exceptions */
+    function test_it_throws_an_exception_if_the_creditor_is_not_found()
+    {
+        $this->setExpectedException(
+            'GoCardless\Pro\Exceptions\ResourceNotFoundException',
+            'Resource not found at /creditors/1234',
+            404
+        );
+
+        $this->api->getCreditor('1234');
+    }
+
+    /** @group Exceptions */
+    function test_it_throws_an_exception_if_the_creditor_bank_account_is_not_found()
+    {
+        $this->setExpectedException(
+            'GoCardless\Pro\Exceptions\ResourceNotFoundException',
+            'Resource not found at /creditor_bank_accounts/1234',
+            404
+        );
+
+        $this->api->getCreditorBankAccount('1234');
+    }
+
+    /** @group Exceptions */
+    function test_it_throws_an_exception_if_the_customer_is_not_found()
+    {
+        $this->setExpectedException(
+            'GoCardless\Pro\Exceptions\ResourceNotFoundException',
+            'Resource not found at /customers/1234',
+            404
+        );
+
+        $this->api->getCustomer('1234');
+    }
+
+    /** @group Exceptions */
+    function test_it_throws_an_exception_if_the_customer_bank_account_is_not_found()
+    {
+        $this->setExpectedException(
+            'GoCardless\Pro\Exceptions\ResourceNotFoundException',
+            'Resource not found at /customer_bank_accounts/1234',
+            404
+        );
+
+        $this->api->getCustomerBankAccount('1234');
+    }
+    
+    /** @group Exceptions */
+    function test_it_throws_an_exception_if_a_mandate_is_not_found()
+    {
+        $this->setExpectedException(
+            'GoCardless\Pro\Exceptions\ResourceNotFoundException',
+            'Resource not found at /mandates/1234',
+            404
+        );
+
+        $this->api->getMandate('1234');
+    }
+
+    /** @group Exceptions */
+    function test_it_throws_an_exception_if_a_payment_is_not_found()
+    {
+        $this->setExpectedException(
+            'GoCardless\Pro\Exceptions\ResourceNotFoundException',
+            'Resource not found at /payments/1234',
+            404
+        );
+
+        $this->api->getPayment('1234');
+    }
+
+    /** @group Exceptions */
+    function test_it_throws_validation_exception_on_validation_failed_api_error()
     {
         $this->setExpectedException('GoCardless\Pro\Exceptions\ValidationException');
 
@@ -301,6 +512,14 @@ class ApiTest extends \PHPUnit_Framework_TestCase
         if (count($this->api->listCreditorBankAccounts()) < 5)
         {
             $this->markTestSkipped('Skipping test due to lack of creditor bank accounts in system. This test requires at least 5.');
+        }
+    }
+
+    private function guardAgainstSmallNumberOfMandates()
+    {
+        if (count($this->api->listMandates()) < 5)
+        {
+            $this->markTestSkipped('Skipping test due to lack of mandates in system. This test requires at least 5.');
         }
     }
 }

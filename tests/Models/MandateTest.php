@@ -1,6 +1,6 @@
 <?php namespace GoCardless\Pro\Tests\Models;
 
-use GoCardless\Pro\Models\CreditorBankAccount;
+use GoCardless\Pro\Models\Creditor;
 use GoCardless\Pro\Models\CustomerBankAccount;
 use GoCardless\Pro\Models\Mandate;
 
@@ -10,12 +10,12 @@ class MandateTest extends \PHPUnit_Framework_TestCase
     function it_can_be_constructed_with_the_required_bank_accounts()
     {
         $customerBankAccount = CustomerBankAccount::fromArray(['id' => 'BA111']);
-        $creditorBankAccount = CreditorBankAccount::fromArray(['id' => 'BA222']);
+        $creditor            = Creditor::fromArray(['id' => 'CR111']);
 
-        $mandate = new Mandate($customerBankAccount, $creditorBankAccount);
+        $mandate = new Mandate($customerBankAccount, $creditor);
 
         $this->assertAttributeSame($customerBankAccount, 'customer_bank_account', $mandate);
-        $this->assertAttributeSame($creditorBankAccount, 'creditor_bank_account', $mandate);
+        $this->assertAttributeSame($creditor, 'creditor', $mandate);
     }
 
     /** @test */
@@ -25,18 +25,36 @@ class MandateTest extends \PHPUnit_Framework_TestCase
     }
 
     /** @test */
+    function it_returns_the_current_scheme()
+    {
+        $this->assertTrue((new Mandate)->useBacs()->isBacs());
+        $this->assertTrue((new Mandate)->useSepaCore()->isSepaCore());
+    }
+
+    /** @test */
+    function it_returns_the_current_status()
+    {
+        $this->assertTrue(Mandate::fromArray(['status' => 'pending_submission'])->isPendingSubmission());
+        $this->assertTrue(Mandate::fromArray(['status' => 'submitted'])->isSubmitted());
+        $this->assertTrue(Mandate::fromArray(['status' => 'active'])->isActive());
+        $this->assertTrue(Mandate::fromArray(['status' => 'failed'])->isFailed());
+        $this->assertTrue(Mandate::fromArray(['status' => 'cancelled'])->isCancelled());
+        $this->assertTrue(Mandate::fromArray(['status' => 'expired'])->isExpired());
+    }
+
+    /** @test */
     function it_can_be_converted_an_array_for_the_api()
     {
-        $mandate = new Mandate;
-        $mandate->setCustomerBankAccount(CustomerBankAccount::fromArray(['id' => 'BA111']))
-                ->setCreditorBankAccount(CreditorBankAccount::fromArray(['id' => 'BA222']))
-                ->useSepaCore();
+        $mandate = (new Mandate(
+            CustomerBankAccount::fromArray(['id' => 'BA111']),
+            Creditor::fromArray(['id' => 'CR111'])
+        ))->useSepaCore();
 
         $this->assertEquals([
             'scheme' => 'sepa_core',
             'links'  => [
                 'customer_bank_account' => 'BA111',
-                'creditor_bank_account' => 'BA222',
+                'creditor'              => 'CR111',
             ],
         ], $mandate->toArray());
     }

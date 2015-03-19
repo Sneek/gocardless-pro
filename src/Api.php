@@ -1,10 +1,13 @@
 <?php namespace GoCardless\Pro;
 
+use GoCardless\Pro\Exceptions\ResourceNotFoundException;
 use GoCardless\Pro\Exceptions\ValidationException;
 use GoCardless\Pro\Models\Creditor;
 use GoCardless\Pro\Models\CreditorBankAccount;
 use GoCardless\Pro\Models\Customer;
 use GoCardless\Pro\Models\CustomerBankAccount;
+use GoCardless\Pro\Models\Mandate;
+use GoCardless\Pro\Models\Payment;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\BadResponseException;
 
@@ -238,6 +241,121 @@ class Api
     }
 
     /**
+     * @param Mandate $mandate
+     *
+     * @return Mandate $mandate
+     */
+    public function createMandate(Mandate $mandate)
+    {
+        $response = $this->post(self::MANDATES, $mandate->toArray());
+
+        return Mandate::fromArray($response);
+    }
+
+    /**
+     * @param int $limit
+     * @return array
+     */
+    public function listMandates($limit = 25)
+    {
+        $response = $this->get(self::MANDATES, ['limit' => intval($limit)]);
+
+        return $this->buildCollection(new Mandate, $response);
+    }
+
+    /**
+     * @param $id
+     * @param int $limit
+     * @return array
+     */
+    public function listMandatesForCustomer($id, $limit = 25)
+    {
+        $response = $this->get(self::MANDATES, [
+            'customer' => $id,
+            'limit'    => $limit,
+        ]);
+
+        return $this->buildCollection(new Mandate, $response);
+    }
+
+    /**
+     * @param $id
+     * @return Mandate
+     */
+    public function getMandate($id)
+    {
+        $response = $this->get(self::MANDATES, [], $id);
+
+        return Mandate::fromArray($response);
+    }
+
+    /**
+     * @param $id
+     * @return Mandate
+     */
+    public function disableMandate($id)
+    {
+        $response = $this->post(self::MANDATES, [], $id . '/actions/cancel');
+
+        return Mandate::fromArray($response);
+    }
+
+    /**
+     * @param $id
+     * @return Mandate
+     */
+    public function reinstateMandate($id)
+    {
+        $response = $this->post(self::MANDATES, [], $id . '/actions/reinstate');
+
+        return Mandate::fromArray($response);
+    }
+
+    /**
+     * @param Payment $payment
+     * @return Payment
+     */
+    public function createPayment(Payment $payment)
+    {
+        $response = $this->post(self::PAYMENTS, $payment->toArray());
+
+        return Payment::fromArray($response);
+    }
+
+    /**
+     * @param $id
+     * @return Payment
+     */
+    public function getPayment($id)
+    {
+        $response = $this->get(self::PAYMENTS, [], $id);
+
+        return Payment::fromArray($response);
+    }
+
+    /**
+     * @param $id
+     * @return Payment
+     */
+    public function cancelPayment($id)
+    {
+        $response = $this->post(self::PAYMENTS, [], $id . '/actions/cancel');
+
+        return Payment::fromArray($response);
+    }
+
+    /**
+     * @param $id
+     * @return Payment
+     */
+    public function retryPayment($id)
+    {
+        $response = $this->post(self::PAYMENTS, [], $id . '/actions/retry');
+
+        return Payment::fromArray($response);
+    }
+
+    /**
      * @param $endpoint
      * @param array $params
      * @param null $path
@@ -245,11 +363,18 @@ class Api
      */
     private function get($endpoint, $params = [], $path = null)
     {
-        $response = $this->client->get($this->url($endpoint, $path), [
-            'headers' => $this->headers(),
-            'query'   => $params,
-            'auth'    => [$this->username, $this->password]
-        ])->json();
+        try
+        {
+            $response = $this->client->get($this->url($endpoint, $path), [
+                'headers' => $this->headers(),
+                'query'   => $params,
+                'auth'    => [$this->username, $this->password]
+            ])->json();
+        }
+        catch (BadResponseException $ex)
+        {
+            $this->handleBadResponseException($ex);
+        }
 
         return $response[$endpoint];
     }
@@ -358,14 +483,44 @@ class Api
     {
         $response = $ex->getResponse()->json();
 
-        if ($response['error']['type'] === 'validation_failed')
+        switch ($response['error']['type'])
         {
-            throw new ValidationException(
-                $response['error']['message'],
-                $response['error']['errors']
-            );
+            case 'validation_failed' :
+                return $this->handleValidationFailedErrors($response);
+
+            case 'invalid_api_usage' :
+                return $this->handleInvalidApiUsage($ex, $response);
         }
 
         throw $ex;
+    }
+
+    /**
+     * @param $response
+     * @throws ValidationException
+     */
+    private function handleValidationFailedErrors($response)
+    {
+        throw new ValidationException(
+            $response['error']['message'],
+            $response['error']['errors']
+        );
+    }
+
+    /**
+     * @param BadResponseException $ex
+     * @param array $response
+     * @throws ResourceNotFoundException
+     */
+    private function handleInvalidApiUsage(BadResponseException $ex, $response)
+    {
+        switch ($response['error']['errors'][0]['reason'])
+        {
+            case 'resource_not_found' :
+                throw new ResourceNotFoundException(
+                    sprintf('Resource not found at %s', $ex->getRequest()->getResource()),
+                    $ex->getCode()
+                );
+        }
     }
 }

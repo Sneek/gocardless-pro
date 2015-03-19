@@ -13,9 +13,9 @@ class Mandate extends Entity
     protected $customer_bank_account;
 
     /**
-     * @var CreditorBankAccount
+     * @var Creditor
      */
-    protected $creditor_bank_account;
+    protected $creditor;
 
     /**
      * @var string
@@ -37,10 +37,10 @@ class Mandate extends Entity
      */
     protected $next_possible_charge_date;
 
-    public function __construct(CustomerBankAccount $customer_bank_account = null, CreditorBankAccount $creditor_bank_account = null)
+    public function __construct(CustomerBankAccount $customer_bank_account = null, Creditor $creditor = null)
     {
         $this->customer_bank_account = $customer_bank_account;
-        $this->creditor_bank_account = $creditor_bank_account;
+        $this->creditor = $creditor;
         $this->useBacs();
     }
 
@@ -56,12 +56,23 @@ class Mandate extends Entity
     }
 
     /**
-     * @param CreditorBankAccount $account
+     * @param Creditor $creditor
      * @return $this
      */
-    public function setCreditorBankAccount(CreditorBankAccount $account)
+    public function setCreditor(Creditor $creditor)
     {
-        $this->creditor_bank_account = $account;
+        $this->creditor = $creditor;
+
+        return $this;
+    }
+
+    /**
+     * @param $scheme
+     * @return $this
+     */
+    protected function setScheme($scheme)
+    {
+        $this->scheme = $scheme;
 
         return $this;
     }
@@ -87,17 +98,6 @@ class Mandate extends Entity
     }
 
     /**
-     * @param $scheme
-     * @return $this
-     */
-    protected function setScheme($scheme)
-    {
-        $this->scheme = $scheme;
-
-        return $this;
-    }
-
-    /**
      * @return string
      */
     public function getReference()
@@ -114,11 +114,75 @@ class Mandate extends Entity
     }
 
     /**
+     * @return bool
+     */
+    public function isPendingSubmission()
+    {
+        return $this->getStatus() === 'pending_submission';
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSubmitted()
+    {
+        return $this->getStatus() === 'submitted';
+    }
+
+    /**
+     * @return bool
+     */
+    public function isActive()
+    {
+        return $this->getStatus() === 'active';
+    }
+
+    /**
+     * @return bool
+     */
+    public function isFailed()
+    {
+        return $this->getStatus() === 'failed';
+    }
+
+    /**
+     * @return bool
+     */
+    public function isCancelled()
+    {
+        return $this->getStatus() === 'cancelled';
+    }
+
+    /**
+     * @return bool
+     */
+    public function isExpired()
+    {
+        return $this->getStatus() === 'expired';
+    }
+
+    /**
      * @return string
      */
     public function getScheme()
     {
         return $this->scheme;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isBacs()
+    {
+        return $this->getScheme() === 'bacs';
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSepaCore()
+    {
+        return $this->getScheme() === 'sepa_core';
     }
 
     /**
@@ -142,10 +206,10 @@ class Mandate extends Entity
             $mandate['links']['customer_bank_account'] = $this->customer_bank_account->getId();
         }
 
-        if ($this->creditor_bank_account instanceof CreditorBankAccount)
+        if ($this->creditor instanceof Creditor)
         {
-            unset($mandate['creditor_bank_account']);
-            $mandate['links']['creditor_bank_account'] = $this->creditor_bank_account->getId();
+            unset($mandate['creditor']);
+            $mandate['links']['creditor'] = $this->creditor->getId();
         }
 
         return $mandate;
