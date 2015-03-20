@@ -482,7 +482,7 @@ class Api
      * @throws ResourceNotFoundException
      * @throws ValidationException
      */
-    private function handleBadResponseExcep1tion(BadResponseException $ex)
+    private function handleBadResponseException(BadResponseException $ex)
     {
         $response = $ex->getResponse()->json();
 
