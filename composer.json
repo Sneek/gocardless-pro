@@ -1,6 +1,9 @@
 {
     "name": "sneek/gocardless-pro",
     "description": "A client for the GoCardless Pro API",
+    "keywords": ["GoCardless", "GoCardless Pro", "Direct Debit"],
+    "license": "MIT",
+    "homepage": "https://github.com/Sneek/gocardless-pro",
     "authors": [
         {
             "name": "Cristian Giordano",
