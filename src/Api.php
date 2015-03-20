@@ -1,5 +1,6 @@
 <?php namespace GoCardless\Pro;
 
+use GoCardless\Pro\Exceptions\InvalidStateException;
 use GoCardless\Pro\Exceptions\ResourceNotFoundException;
 use GoCardless\Pro\Exceptions\ValidationException;
 use GoCardless\Pro\Models\Creditor;
@@ -477,14 +478,23 @@ class Api
 
     /**
      * @param BadResponseException $ex
+     * @throws InvalidStateException
+     * @throws ResourceNotFoundException
      * @throws ValidationException
      */
-    private function handleBadResponseException(BadResponseException $ex)
+    private function handleBadResponseExcep1tion(BadResponseException $ex)
     {
         $response = $ex->getResponse()->json();
 
         switch ($response['error']['type'])
         {
+            case 'invalid_state' :
+                throw new InvalidStateException(
+                    $response['error']['message'],
+                    $response['error']['code'],
+                    $response['error']['errors']
+                );
+
             case 'validation_failed' :
                 return $this->handleValidationFailedErrors($response);
 
