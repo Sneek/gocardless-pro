@@ -1,5 +1,11 @@
 # Overview
 
+## Work In Progress
+
+This package is in very early development and lots of things may change! 
+Please explore the source and test cases to get a clearer understanding. Also
+ make sure you sign up to GoCardless Pro and read their documentation.
+
 ## Installation
 
 The recommended way to install GoCardless Pro is with `Composer <http://getcomposer.org>`_. Composer is a dependency
