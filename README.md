@@ -5,6 +5,8 @@
 This package is in very early development and lots of things may change! 
 Please explore the source and test cases to get a clearer understanding. Also
  make sure you sign up to GoCardless Pro and read their documentation.
+ 
+> Take a look in the examples folder to get started 
 
 ## Installation
 
