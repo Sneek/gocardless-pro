@@ -1,5 +1,7 @@
 <?php namespace GoCardless\Pro\Tests\Models;
 
+use GoCardless\Pro\Models\Customer;
+use GoCardless\Pro\Models\CustomerBankAccount;
 use GoCardless\Pro\Tests\Fixtures;
 
 class CustomerBankAccountTest extends \PHPUnit_Framework_TestCase
@@ -13,6 +15,21 @@ class CustomerBankAccountTest extends \PHPUnit_Framework_TestCase
             'GoCardless\Pro\Models\CustomerBankAccount',
             $this->get_customer_bank_account()
         );
+    }
+
+    /** @test */
+    function it_has_a_shortcut_to_fill_uk_bank_details()
+    {
+        $account = new CustomerBankAccount;
+        $customer = new Customer;
+
+        $account->withAccountDetails('John Doe', '12345678', '112233', 'GB', $customer);
+
+        $this->assertEquals('John Doe', $account->getAccountHolderName());
+        $this->assertEquals('12345678', $account->getAccountNumber());
+        $this->assertEquals('112233', $account->getSortCode());
+        $this->assertEquals('GB', $account->getCountryCode());
+        $this->assertAttributeSame($customer, 'customer', $account);
     }
 
     /** @test */

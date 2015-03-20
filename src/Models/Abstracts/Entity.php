@@ -9,6 +9,15 @@ abstract class Entity
     protected $created_at;
 
     /**
+     * @param $id
+     * @return static
+     */
+    public static function withId($id)
+    {
+        return (new static)->setId($id);
+    }
+
+    /**
      * @return string
      */
     public function getId()

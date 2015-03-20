@@ -48,59 +48,6 @@ class Payment
     }
 
     /**
-     * @param $date
-     * @return Payment
-     */
-    public function on($date)
-    {
-        return $this->setChargeDate($date);
-    }
-
-    /**
-     * @param $amount
-     * @return $this
-     */
-    public function setAmount($amount)
-    {
-        $this->amount = $amount;
-
-        return $this;
-    }
-
-    /**
-     * @param $currency
-     * @return $this
-     */
-    public function setCurrency($currency)
-    {
-        $this->currency = $currency;
-
-        return $this;
-    }
-
-    /**
-     * @param $date
-     * @return $this
-     */
-    public function setChargeDate($date)
-    {
-        $this->charge_date = $date;
-
-        return $this;
-    }
-
-    /**
-     * @param $description
-     * @return $this
-     */
-    public function setDescription($description)
-    {
-        $this->description = $description;
-
-        return $this;
-    }
-
-    /**
      * @param Mandate $mandate
      * @return $this
      */
@@ -109,6 +56,15 @@ class Payment
         $this->mandate = $mandate;
 
         return $this;
+    }
+
+    /**
+     * @param $date
+     * @return Payment
+     */
+    public function on($date)
+    {
+        return $this->setChargeDate($date);
     }
 
     /**
@@ -136,11 +92,33 @@ class Payment
     }
 
     /**
+     * @param $date
+     * @return $this
+     */
+    public function setChargeDate($date)
+    {
+        $this->charge_date = $date;
+
+        return $this;
+    }
+
+    /**
      * @return int
      */
     public function getAmount()
     {
         return intval($this->amount);
+    }
+
+    /**
+     * @param $amount
+     * @return $this
+     */
+    public function setAmount($amount)
+    {
+        $this->amount = $amount;
+
+        return $this;
     }
 
     /**
@@ -152,6 +130,17 @@ class Payment
     }
 
     /**
+     * @param $currency
+     * @return $this
+     */
+    public function setCurrency($currency)
+    {
+        $this->currency = $currency;
+
+        return $this;
+    }
+
+    /**
      * @return string
      */
     public function getDescription()
@@ -160,11 +149,14 @@ class Payment
     }
 
     /**
-     * @return string
+     * @param $description
+     * @return $this
      */
-    public function getStatus()
+    public function setDescription($description)
     {
-        return $this->status;
+        $this->description = $description;
+
+        return $this;
     }
 
     /**
@@ -173,6 +165,14 @@ class Payment
     public function isPendingSubmission()
     {
         return $this->getStatus() === 'pending_submission';
+    }
+
+    /**
+     * @return string
+     */
+    public function getStatus()
+    {
+        return $this->status;
     }
 
     /**
@@ -246,8 +246,7 @@ class Payment
     {
         $payment = array_filter(get_object_vars($this));
 
-        if ($this->mandate instanceof Mandate)
-        {
+        if ($this->mandate instanceof Mandate) {
             unset($payment['mandate']);
             $payment['links']['mandate'] = $this->mandate->getId();
         }

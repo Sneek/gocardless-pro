@@ -32,17 +32,20 @@ class Customer extends Party
     }
 
     /**
-     * @return string
+     * @param $email
+     * @return Customer
      */
-    public function getForename()
+    public function setEmail($email)
     {
-        return $this->getGivenName();
+        $this->email = $email;
+
+        return $this;
     }
 
     /**
      * @return string
      */
-    public function getFirstName()
+    public function getForename()
     {
         return $this->getGivenName();
     }
@@ -56,17 +59,28 @@ class Customer extends Party
     }
 
     /**
-     * @return string
+     * @param $given_name
+     * @return Customer
      */
-    public function getSurname()
+    public function setGivenName($given_name)
     {
-        return $this->getFamilyName();
+        $this->given_name = $given_name;
+
+        return $this;
     }
 
     /**
      * @return string
      */
-    public function getLastName()
+    public function getFirstName()
+    {
+        return $this->getGivenName();
+    }
+
+    /**
+     * @return string
+     */
+    public function getSurname()
     {
         return $this->getFamilyName();
     }
@@ -80,14 +94,22 @@ class Customer extends Party
     }
 
     /**
-     * @param $email
+     * @param $family_name
      * @return Customer
      */
-    public function setEmail($email)
+    public function setFamilyName($family_name)
     {
-        $this->email = $email;
+        $this->family_name = $family_name;
 
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLastName()
+    {
+        return $this->getFamilyName();
     }
 
     /**
@@ -109,17 +131,6 @@ class Customer extends Party
     }
 
     /**
-     * @param $given_name
-     * @return Customer
-     */
-    public function setGivenName($given_name)
-    {
-        $this->given_name = $given_name;
-
-        return $this;
-    }
-
-    /**
      * @param $surname
      * @return Customer
      */
@@ -135,16 +146,5 @@ class Customer extends Party
     public function setLastName($last_name)
     {
         return $this->setFamilyName($last_name);
-    }
-
-    /**
-     * @param $family_name
-     * @return Customer
-     */
-    public function setFamilyName($family_name)
-    {
-        $this->family_name = $family_name;
-
-        return $this;
     }
 }

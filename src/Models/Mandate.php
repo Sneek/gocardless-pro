@@ -39,25 +39,16 @@ class Mandate extends Entity
 
     public function __construct(CustomerBankAccount $customer_bank_account = null, Creditor $creditor = null)
     {
-        $this->customer_bank_account = $customer_bank_account;
-        $this->creditor = $creditor;
+        $this->setCustomerBankAccount($customer_bank_account);
+        $this->setCreditor($creditor);
         $this->useBacs();
-    }
-
-    /**
-     * @param $id
-     * @return Mandate
-     */
-    public static function withId($id)
-    {
-        return (new static)->setId($id);
     }
 
     /**
      * @param CustomerBankAccount $account
      * @return $this
      */
-    public function setCustomerBankAccount(CustomerBankAccount $account)
+    public function setCustomerBankAccount(CustomerBankAccount $account = null)
     {
         $this->customer_bank_account = $account;
 
@@ -68,7 +59,7 @@ class Mandate extends Entity
      * @param Creditor $creditor
      * @return $this
      */
-    public function setCreditor(Creditor $creditor)
+    public function setCreditor(Creditor $creditor = null)
     {
         $this->creditor = $creditor;
 
@@ -209,14 +200,12 @@ class Mandate extends Entity
     {
         $mandate = array_filter(get_object_vars($this));
 
-        if ($this->customer_bank_account instanceof CustomerBankAccount)
-        {
+        if ($this->customer_bank_account instanceof CustomerBankAccount) {
             unset($mandate['customer_bank_account']);
             $mandate['links']['customer_bank_account'] = $this->customer_bank_account->getId();
         }
 
-        if ($this->creditor instanceof Creditor)
-        {
+        if ($this->creditor instanceof Creditor) {
             unset($mandate['creditor']);
             $mandate['links']['creditor'] = $this->creditor->getId();
         }

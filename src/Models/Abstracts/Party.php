@@ -23,19 +23,6 @@ abstract class Party extends Entity
     protected $country_code;
 
     /**
-     * @param $id
-     * @return static
-     */
-    public static function withId($id)
-    {
-        $party = new static;
-
-        $party->setId($id);
-
-        return $party;
-    }
-
-    /**
      * @param $street
      * @param $city
      * @param $postal_code

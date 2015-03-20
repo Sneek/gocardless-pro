@@ -58,6 +58,15 @@ class BankAccountTest extends \PHPUnit_Framework_TestCase
     }
 
     /** @test */
+    function it_has_a_factory_method_to_create_with_an_id()
+    {
+        $account = BasicBankAccount::withId('1234');
+
+        $this->assertInstanceOf('GoCardless\Pro\Tests\Models\BasicBankAccount', $account);
+        $this->assertEquals('1234', $account->getId());
+    }
+
+    /** @test */
     function it_can_be_created_from_an_array()
     {
         $response = [

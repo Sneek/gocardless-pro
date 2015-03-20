@@ -60,6 +60,15 @@ class PartyTest extends \PHPUnit_Framework_TestCase
     }
 
     /** @test */
+    function it_has_a_factory_method_to_create_with_an_id()
+    {
+        $party = BasicParty::withId('1234');
+
+        $this->assertInstanceOf('GoCardless\Pro\Tests\Models\BasicParty', $party);
+        $this->assertEquals('1234', $party->getId());
+    }
+
+    /** @test */
     function it_can_be_converted_to_an_array_for_updating()
     {
         $party = BasicParty::fromArray([

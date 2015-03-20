@@ -9,6 +9,8 @@ class ValidationExceptionTest extends \PHPUnit_Framework_TestCase
     {
         $ex = new ValidationException('A simple message', ['foo' => 'bar']);
 
+        $this->assertEquals('A simple message', $ex->getMessage());
         $this->assertEquals(['foo' => 'bar'], $ex->errors());
+        $this->assertEquals(['foo' => 'bar'], $ex->getErrors());
     }
 }

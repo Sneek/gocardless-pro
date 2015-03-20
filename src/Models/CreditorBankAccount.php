@@ -18,8 +18,7 @@ class CreditorBankAccount extends BankAccount
     {
         $account = array_filter(get_object_vars($this));
 
-        if ($this->creditor instanceof Creditor)
-        {
+        if ($this->creditor instanceof Creditor) {
             unset($account['creditor']);
             $account['links'] = [
                 'creditor' => $this->creditor->getId()

@@ -28,89 +28,12 @@ abstract class BankAccount extends Entity
     protected $currency;
 
     /**
-     * @param $account_holder_name
-     * @return $this
-     */
-    public function setAccountHolderName($account_holder_name)
-    {
-        $this->account_holder_name = $account_holder_name;
-
-        return $this;
-    }
-
-    /**
-     * @param $account_number
-     * @return $this
-     */
-    public function setAccountNumber($account_number)
-    {
-        $this->account_number = $account_number;
-
-        return $this;
-    }
-
-    /**
      * @param $sort_code
      * @return $this
      */
     public function setSortCode($sort_code)
     {
         return $this->setBranchCode($sort_code);
-    }
-
-    /**
-     * @param $branch_code
-     * @return $this
-     */
-    public function setBranchCode($branch_code)
-    {
-        $this->branch_code = $branch_code;
-
-        return $this;
-    }
-
-    /**
-     * @param $bank_code
-     * @return $this
-     */
-    public function setBankCode($bank_code)
-    {
-        $this->bank_code = $bank_code;
-
-        return $this;
-    }
-
-    /**
-     * @param $iban
-     * @return $this
-     */
-    public function setIban($iban)
-    {
-        $this->iban = $iban;
-
-        return $this;
-    }
-
-    /**
-     * @param $country_code
-     * @return $this
-     */
-    public function setCountryCode($country_code)
-    {
-        $this->country_code = $country_code;
-
-        return $this;
-    }
-
-    /**
-     * @param $currency
-     * @return $this
-     */
-    public function setCurrency($currency)
-    {
-        $this->currency = $currency;
-
-        return $this;
     }
 
     /**
@@ -132,17 +55,17 @@ abstract class BankAccount extends Entity
     /**
      * @return bool
      */
-    public function isEnabled()
+    public function isDisabled()
     {
-        return (bool) $this->enabled;
+        return !$this->isEnabled();
     }
 
     /**
      * @return bool
      */
-    public function isDisabled()
+    public function isEnabled()
     {
-        return ! $this->isEnabled();
+        return (bool)$this->enabled;
     }
 
     /**
@@ -154,11 +77,33 @@ abstract class BankAccount extends Entity
     }
 
     /**
+     * @param $account_holder_name
+     * @return $this
+     */
+    public function setAccountHolderName($account_holder_name)
+    {
+        $this->account_holder_name = $account_holder_name;
+
+        return $this;
+    }
+
+    /**
      * @return string
      */
     public function getAccountNumber()
     {
         return $this->account_number;
+    }
+
+    /**
+     * @param $account_number
+     * @return $this
+     */
+    public function setAccountNumber($account_number)
+    {
+        $this->account_number = $account_number;
+
+        return $this;
     }
 
     /**
@@ -178,11 +123,33 @@ abstract class BankAccount extends Entity
     }
 
     /**
+     * @param $branch_code
+     * @return $this
+     */
+    public function setBranchCode($branch_code)
+    {
+        $this->branch_code = $branch_code;
+
+        return $this;
+    }
+
+    /**
      * @return string
      */
     public function getBankCode()
     {
         return $this->bank_code;
+    }
+
+    /**
+     * @param $bank_code
+     * @return $this
+     */
+    public function setBankCode($bank_code)
+    {
+        $this->bank_code = $bank_code;
+
+        return $this;
     }
 
     /**
@@ -194,6 +161,17 @@ abstract class BankAccount extends Entity
     }
 
     /**
+     * @param $iban
+     * @return $this
+     */
+    public function setIban($iban)
+    {
+        $this->iban = $iban;
+
+        return $this;
+    }
+
+    /**
      * @return string
      */
     public function getCountryCode()
@@ -202,10 +180,32 @@ abstract class BankAccount extends Entity
     }
 
     /**
+     * @param $country_code
+     * @return $this
+     */
+    public function setCountryCode($country_code)
+    {
+        $this->country_code = $country_code;
+
+        return $this;
+    }
+
+    /**
      * @return string
      */
     public function getCurrency()
     {
         return $this->currency;
+    }
+
+    /**
+     * @param $currency
+     * @return $this
+     */
+    public function setCurrency($currency)
+    {
+        $this->currency = $currency;
+
+        return $this;
     }
 }

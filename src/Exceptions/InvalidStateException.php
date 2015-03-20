@@ -16,6 +16,11 @@ class InvalidStateException extends \Exception
         $this->errors = $errors;
     }
 
+    public function getErrors()
+    {
+        return $this->errors();
+    }
+
     public function errors()
     {
         return $this->errors;

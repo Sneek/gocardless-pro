@@ -11,10 +11,8 @@ trait Factory
     {
         $model = new static;
 
-        foreach ($details as $attribute => $value)
-        {
-            if (property_exists($model, $attribute))
-            {
+        foreach ($details as $attribute => $value) {
+            if (property_exists($model, $attribute)) {
                 $model->{$attribute} = $value;
             }
         }

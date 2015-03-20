@@ -14,12 +14,12 @@ use GuzzleHttp\Exception\BadResponseException;
 
 class Api
 {
-    const CREDITORS              = 'creditors';
+    const CREDITORS = 'creditors';
     const CREDITOR_BANK_ACCOUNTS = 'creditor_bank_accounts';
-    const CUSTOMERS              = 'customers';
+    const CUSTOMERS = 'customers';
     const CUSTOMER_BANK_ACCOUNTS = 'customer_bank_accounts';
-    const MANDATES               = 'mandates';
-    const PAYMENTS               = 'payments';
+    const MANDATES = 'mandates';
+    const PAYMENTS = 'payments';
 
     /**
      * @var Client
@@ -48,10 +48,10 @@ class Api
 
     public function __construct(Client $client, $username, $password, $version, $environment = 'staging')
     {
-        $this->client      = $client;
-        $this->username    = $username;
-        $this->password    = $password;
-        $this->version     = $version;
+        $this->client = $client;
+        $this->username = $username;
+        $this->password = $password;
+        $this->version = $version;
         $this->environment = $environment === 'production' ? 'production' : 'staging';
     }
 
@@ -273,7 +273,7 @@ class Api
     {
         $response = $this->get(self::MANDATES, [
             'customer' => $id,
-            'limit'    => $limit,
+            'limit' => $limit,
         ]);
 
         return $this->buildCollection(new Mandate, $response);
@@ -364,16 +364,13 @@ class Api
      */
     private function get($endpoint, $params = [], $path = null)
     {
-        try
-        {
+        try {
             $response = $this->client->get($this->url($endpoint, $path), [
                 'headers' => $this->headers(),
-                'query'   => $params,
-                'auth'    => [$this->username, $this->password]
+                'query' => $params,
+                'auth' => [$this->username, $this->password]
             ])->json();
-        }
-        catch (BadResponseException $ex)
-        {
+        } catch (BadResponseException $ex) {
             $this->handleBadResponseException($ex);
         }
 
@@ -412,16 +409,13 @@ class Api
      */
     private function send($method, $endpoint, $data, $path)
     {
-        try
-        {
+        try {
             $response = $this->client->$method($this->url($endpoint, $path), [
                 'headers' => $this->headers(),
-                'json'    => [$endpoint => $data],
-                'auth'    => [$this->username, $this->password]
+                'json' => [$endpoint => $data],
+                'auth' => [$this->username, $this->password]
             ])->json();
-        }
-        catch (BadResponseException $ex)
-        {
+        } catch (BadResponseException $ex) {
             $this->handleBadResponseException($ex);
         }
 
@@ -455,7 +449,7 @@ class Api
     {
         return [
             'GoCardless-Version' => $this->version,
-            'Content-Type'       => 'application/json'
+            'Content-Type' => 'application/json'
         ];
     }
 
@@ -468,8 +462,7 @@ class Api
     {
         $collection = [];
 
-        foreach ($response as $details)
-        {
+        foreach ($response as $details) {
             $collection[] = $model::fromArray($details);
         }
 
@@ -486,8 +479,7 @@ class Api
     {
         $response = $ex->getResponse()->json();
 
-        switch ($response['error']['type'])
-        {
+        switch ($response['error']['type']) {
             case 'invalid_state' :
                 throw new InvalidStateException(
                     $response['error']['message'],
@@ -524,8 +516,7 @@ class Api
      */
     private function handleInvalidApiUsage(BadResponseException $ex, $response)
     {
-        switch ($response['error']['errors'][0]['reason'])
-        {
+        switch ($response['error']['errors'][0]['reason']) {
             case 'resource_not_found' :
                 throw new ResourceNotFoundException(
                     sprintf('Resource not found at %s', $ex->getRequest()->getResource()),
