@@ -6,3 +6,4 @@ composer.lock
 npm-debug.log
 config.php
 coverage/
+_build/
