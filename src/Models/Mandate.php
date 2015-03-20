@@ -45,6 +45,15 @@ class Mandate extends Entity
     }
 
     /**
+     * @param $id
+     * @return Mandate
+     */
+    public static function withId($id)
+    {
+        return (new static)->setId($id);
+    }
+
+    /**
      * @param CustomerBankAccount $account
      * @return $this
      */
