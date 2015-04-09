@@ -273,7 +273,7 @@ class Api
     {
         $response = $this->get(self::MANDATES, [
             'customer' => $id,
-            'limit' => $limit,
+            'limit'    => $limit,
         ]);
 
         return $this->buildCollection(new Mandate, $response);
@@ -367,8 +367,8 @@ class Api
         try {
             $response = $this->client->get($this->url($endpoint, $path), [
                 'headers' => $this->headers(),
-                'query' => $params,
-                'auth' => [$this->username, $this->password]
+                'query'   => $params,
+                'auth'    => [$this->username, $this->password]
             ])->json();
         } catch (BadResponseException $ex) {
             $this->handleBadResponseException($ex);
@@ -412,8 +412,8 @@ class Api
         try {
             $response = $this->client->$method($this->url($endpoint, $path), [
                 'headers' => $this->headers(),
-                'json' => [$endpoint => $data],
-                'auth' => [$this->username, $this->password]
+                'json'    => [$endpoint => $data],
+                'auth'    => [$this->username, $this->password]
             ])->json();
         } catch (BadResponseException $ex) {
             $this->handleBadResponseException($ex);
@@ -449,7 +449,7 @@ class Api
     {
         return [
             'GoCardless-Version' => $this->version,
-            'Content-Type' => 'application/json'
+            'Content-Type'       => 'application/json'
         ];
     }
 
