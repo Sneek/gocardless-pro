@@ -294,7 +294,7 @@ class Api
      * @param $id
      * @return Mandate
      */
-    public function disableMandate($id)
+    public function cancelMandate($id)
     {
         $response = $this->post(self::MANDATES, [], $id . '/actions/cancel');
 
@@ -410,9 +410,11 @@ class Api
     private function send($method, $endpoint, $data, $path)
     {
         try {
+            $payload = $data ? [$endpoint => $data] : null;
+
             $response = $this->client->$method($this->url($endpoint, $path), [
                 'headers' => $this->headers(),
-                'json'    => [$endpoint => $data],
+                'json'    => $payload,
                 'auth'    => [$this->username, $this->password]
             ])->json();
         } catch (BadResponseException $ex) {

@@ -340,9 +340,9 @@ class ApiTest extends \PHPUnit_Framework_TestCase
     }
 
     /** @depends test_it_can_create_a_mandate */
-    function test_it_can_disable_a_mandate(Mandate $mandate)
+    function test_it_can_cancel_a_mandate(Mandate $mandate)
     {
-        $mandate = $this->api->disableMandate($mandate->getId());
+        $mandate = $this->api->cancelMandate($mandate->getId());
 
         $this->assertTrue($mandate->isCancelled());
         $this->assertNull($mandate->getNextPossibleChargeDate());
@@ -350,8 +350,8 @@ class ApiTest extends \PHPUnit_Framework_TestCase
         return $mandate;
     }
 
-    /** @depends test_it_can_disable_a_mandate */
-    function test_it_can_reinstate_a_disabled_mandate(Mandate $mandate)
+    /** @depends test_it_can_cancel_a_mandate */
+    function test_it_can_reinstate_a_cancelled_mandate(Mandate $mandate)
     {
         $mandate = $this->api->reinstateMandate($mandate->getId());
 
