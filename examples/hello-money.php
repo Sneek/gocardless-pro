@@ -31,7 +31,7 @@ $customer = (new Customer())->setFullName('David', 'Cameron')
                             ->setAddress('10 Downing Street', 'London', 'SW1A 2AA', 'GB');
 $customer = $api->createCustomer($customer);
 
-$account = (new CustomerBankAccount())->withAccountDetails('Mr D Cameron', '55997711', '200000', $customer);
+$account = (new CustomerBankAccount())->withAccountDetails('Mr D Cameron', '55997711', '200000', 'GB', $customer);
 $account = $api->createCustomerBankAccount($account);
 
 // You also get a creditor ID automatically when you sign up.

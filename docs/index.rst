@@ -99,7 +99,7 @@ install GoCardless Pro's dependencies using Composer:
 .. code-block:: bash
 
     git clone https://github.com/sneek/gocardless-pro.git
-    cd guzzle && curl -s http://getcomposer.org/installer | php && ./composer.phar install --dev
+    cd gocardless-pro && curl -s http://getcomposer.org/installer | php && ./composer.phar install --dev
 
 GoCardless Pro is unit tested with PHPUnit. You will need to setup a
 GoCardless account and configure the API keys so you can authenticate. Run
