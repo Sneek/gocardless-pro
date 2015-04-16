@@ -78,14 +78,12 @@ class Api
     }
 
     /**
-     * @param int $limit
+     * @param array $options
      * @return array
      */
-    public function listCreditors($limit = 25)
+    public function listCreditors($options = [])
     {
-        $response = $this->get(self::CREDITORS, [
-            'limit' => intval($limit)
-        ]);
+        $response = $this->get(self::CREDITORS, $options);
 
         return $this->buildCollection(new Creditor, $response);
     }
@@ -113,14 +111,12 @@ class Api
     }
 
     /**
-     * @param int $limit
+     * @param array $options
      * @return array
      */
-    public function listCreditorBankAccounts($limit = 25)
+    public function listCreditorBankAccounts($options = [])
     {
-        $response = $this->get(self::CREDITOR_BANK_ACCOUNTS, [
-            'limit' => $limit,
-        ]);
+        $response = $this->get(self::CREDITOR_BANK_ACCOUNTS, $options);
 
         return $this->buildCollection(new CreditorBankAccount, $response);
     }
@@ -170,14 +166,12 @@ class Api
     }
 
     /**
-     * @param int $limit
+     * @param array $options
      * @return array
      */
-    public function listCustomers($limit = 25)
+    public function listCustomers($options = [])
     {
-        $response = $this->get(self::CUSTOMERS, [
-            'limit' => intval($limit),
-        ]);
+        $response = $this->get(self::CUSTOMERS, $options);
 
         return $this->buildCollection(new Customer, $response);
     }
@@ -205,14 +199,12 @@ class Api
     }
 
     /**
-     * @param int $limit
+     * @param array $options
      * @return array
      */
-    public function listCustomerBankAccounts($limit = 25)
+    public function listCustomerBankAccounts($options = [])
     {
-        $response = $this->get(self::CUSTOMER_BANK_ACCOUNTS, [
-            'limit' => intval($limit)
-        ]);
+        $response = $this->get(self::CUSTOMER_BANK_ACCOUNTS, $options);
 
         return $this->buildCollection(new CustomerBankAccount, $response);
     }
@@ -254,27 +246,12 @@ class Api
     }
 
     /**
-     * @param int $limit
+     * @param array $options
      * @return array
      */
-    public function listMandates($limit = 25)
+    public function listMandates($options = [])
     {
-        $response = $this->get(self::MANDATES, ['limit' => intval($limit)]);
-
-        return $this->buildCollection(new Mandate, $response);
-    }
-
-    /**
-     * @param $id
-     * @param int $limit
-     * @return array
-     */
-    public function listMandatesForCustomer($id, $limit = 25)
-    {
-        $response = $this->get(self::MANDATES, [
-            'customer' => $id,
-            'limit'    => $limit,
-        ]);
+        $response = $this->get(self::MANDATES, $options);
 
         return $this->buildCollection(new Mandate, $response);
     }

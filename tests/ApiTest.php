@@ -75,7 +75,7 @@ class ApiTest extends \PHPUnit_Framework_TestCase
     {
         $this->guardAgainstSmallNumberOfCreditors();
 
-        $this->assertCount(3, $this->api->listCreditors(3));
+        $this->assertCount(3, $this->api->listCreditors(['limit' => 3]));
     }
 
     /** @depends it_can_create_a_creditor */
@@ -125,7 +125,7 @@ class ApiTest extends \PHPUnit_Framework_TestCase
     {
         $this->guardAgainstSmallNumberOfCreditorBankAccounts();
 
-        $this->assertCount(3, $this->api->listCreditorBankAccounts(3));
+        $this->assertCount(3, $this->api->listCreditorBankAccounts(['limit' => 3]));
     }
 
     /** @depends test_it_can_create_creditor_bank_account */
@@ -190,7 +190,7 @@ class ApiTest extends \PHPUnit_Framework_TestCase
     {
         $this->guardAgainstSmallNumberOfCustomerAccounts();
 
-        $this->assertCount(3, $this->api->listCustomers(3));
+        $this->assertCount(3, $this->api->listCustomers(['limit' => 3]));
     }
 
     /** @depends it_can_create_a_customer */
@@ -238,7 +238,21 @@ class ApiTest extends \PHPUnit_Framework_TestCase
     {
         $this->guardAgainstSmallNumberOfCustomerBankAccounts();
 
-        $this->assertCount(3, $this->api->listCustomerBankAccounts(3));
+        $this->assertCount(3, $this->api->listCustomerBankAccounts(['limit' => 3]));
+    }
+
+    /**
+     * @depends it_can_create_a_customer
+     * @depends test_it_can_create_a_customer_bank_account
+     */
+    function test_it_can_return_customer_bank_accounts_for_a_specific_customer(Customer $customer, CustomerBankAccount $old)
+    {
+        $accounts = $this->api->listCustomerBankAccounts(['customer' => $customer->getId()]);
+
+        $this->assertCount(1, $accounts);
+        $this->assertInternalType('array', $accounts);
+        $this->assertInstanceOf('GoCardless\Pro\Models\CustomerBankAccount', $accounts[0]);
+        $this->assertEquals($old->getId(), $accounts[0]->getId());
     }
 
     /** @depends test_it_can_create_a_customer_bank_account */
@@ -299,36 +313,7 @@ class ApiTest extends \PHPUnit_Framework_TestCase
     {
         $this->guardAgainstSmallNumberOfMandates();
 
-        $this->assertCount(3, $this->api->listMandates(3));
-    }
-
-    /** @depends it_can_create_a_customer */
-    function test_it_can_list_customer_mandates(Customer $customer)
-    {
-        $mandates = $this->api->listMandatesForCustomer($customer->getId());
-
-        $this->assertInternalType('array', $mandates);
-        foreach ($mandates as $mandate)
-        {
-            $this->assertInstanceOf('GoCardless\Pro\Models\Mandate', $mandate);
-        }
-    }
-
-    /**
-     * @depends it_can_create_a_customer
-     * @depends test_it_can_create_a_customer_bank_account
-     * @depends test_it_can_get_a_single_creditor
-     */
-    function test_it_can_limit_the_number_of_customer_mandates(Customer $customer, CustomerBankAccount $customerBankAccount, Creditor $creditor)
-    {
-        $mandate = new Mandate($customerBankAccount, $creditor);
-        $this->api->createMandate($mandate);
-        $this->api->createMandate($mandate);
-        $this->api->createMandate($mandate);
-        $this->api->createMandate($mandate);
-        $this->api->createMandate($mandate);
-
-        $this->assertcount(3, $this->api->listMandatesForCustomer($customer->getId(), 3));
+        $this->assertCount(3, $this->api->listMandates(['limit' => 3]));
     }
 
     /** @depends test_it_can_create_a_mandate */
