@@ -263,6 +263,18 @@ class ApiTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($account->isDisabled());
     }
 
+    /** @depends it_can_create_a_customer */
+    function test_it_can_list_customer_bankaccounts_for_customer(Customer $customer)
+    {
+        $bankaccounts = $this->api->listCustomerBankAccountsForCustomer($customer->getId());
+
+        $this->assertInternalType('array', $bankaccounts);
+        foreach ($bankaccounts as $bankaccount)
+        {
+            $this->assertInstanceOf('GoCardless\Pro\Models\CustomerBankAccount', $bankaccount);
+        }
+    }
+
     /**
      * @depends test_it_can_create_a_customer_bank_account
      * @depends test_it_can_get_a_single_creditor
