@@ -48,10 +48,10 @@ class Api
 
     public function __construct(Client $client, $username, $password, $version, $environment = 'staging')
     {
-        $this->client = $client;
-        $this->username = $username;
-        $this->password = $password;
-        $this->version = $version;
+        $this->client      = $client;
+        $this->username    = $username;
+        $this->password    = $password;
+        $this->version     = $version;
         $this->environment = $environment === 'production' ? 'production' : 'staging';
     }
 

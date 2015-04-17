@@ -64,8 +64,7 @@ class ApiTest extends \PHPUnit_Framework_TestCase
         $creditors = $this->api->listCreditors();
 
         $this->assertInternalType('array', $creditors);
-        foreach ($creditors as $creditor)
-        {
+        foreach ($creditors as $creditor) {
             $this->assertInstanceOf('GoCardless\Pro\Models\Creditor', $creditor);
         }
     }
@@ -114,8 +113,7 @@ class ApiTest extends \PHPUnit_Framework_TestCase
         $accounts = $this->api->listCreditorBankAccounts();
 
         $this->assertInternalType('array', $accounts);
-        foreach ($accounts as $account)
-        {
+        foreach ($accounts as $account) {
             $this->assertInstanceOf('GoCardless\Pro\Models\CreditorBankAccount', $account);
         }
     }
@@ -179,8 +177,7 @@ class ApiTest extends \PHPUnit_Framework_TestCase
         $customers = $this->api->listCustomers();
 
         $this->assertInternalType('array', $customers);
-        foreach ($customers as $customer)
-        {
+        foreach ($customers as $customer) {
             $this->assertInstanceOf('GoCardless\Pro\Models\Customer', $customer);
         }
     }
@@ -227,8 +224,7 @@ class ApiTest extends \PHPUnit_Framework_TestCase
         $accounts = $this->api->listCustomerBankAccounts();
 
         $this->assertInternalType('array', $accounts);
-        foreach ($accounts as $account)
-        {
+        foreach ($accounts as $account) {
             $this->assertInstanceOf('GoCardless\Pro\Models\CustomerBankAccount', $account);
         }
     }
@@ -245,8 +241,10 @@ class ApiTest extends \PHPUnit_Framework_TestCase
      * @depends it_can_create_a_customer
      * @depends test_it_can_create_a_customer_bank_account
      */
-    function test_it_can_return_customer_bank_accounts_for_a_specific_customer(Customer $customer, CustomerBankAccount $old)
-    {
+    function test_it_can_return_customer_bank_accounts_for_a_specific_customer(
+        Customer $customer,
+        CustomerBankAccount $old
+    ) {
         $accounts = $this->api->listCustomerBankAccounts(['customer' => $customer->getId()]);
 
         $this->assertCount(1, $accounts);
@@ -268,8 +266,8 @@ class ApiTest extends \PHPUnit_Framework_TestCase
     function it_can_disable_a_bank_account()
     {
         $customer = $this->api->createCustomer($this->get_basic_customer());
-        $account = $this->get_customer_bank_account($customer);
-        $account = $this->api->createCustomerBankAccount($account);
+        $account  = $this->get_customer_bank_account($customer);
+        $account  = $this->api->createCustomerBankAccount($account);
 
         $account = $this->api->disableCustomerBankAccount($account->getId());
 
@@ -302,8 +300,7 @@ class ApiTest extends \PHPUnit_Framework_TestCase
         $mandates = $this->api->listMandates();
 
         $this->assertInternalType('array', $mandates);
-        foreach ($mandates as $mandate)
-        {
+        foreach ($mandates as $mandate) {
             $this->assertInstanceOf('GoCardless\Pro\Models\Mandate', $mandate);
         }
     }
@@ -430,7 +427,7 @@ class ApiTest extends \PHPUnit_Framework_TestCase
 
         $this->api->getCustomerBankAccount('1234');
     }
-    
+
     /** @group Exceptions */
     function test_it_throws_an_exception_if_a_mandate_is_not_found()
     {
@@ -470,40 +467,35 @@ class ApiTest extends \PHPUnit_Framework_TestCase
      */
     private function guardAgainstSmallNumberOfCustomerAccounts()
     {
-        if (count($this->api->listCustomers()) < 5)
-        {
+        if (count($this->api->listCustomers()) < 5) {
             $this->markTestSkipped('Skipping test due to lack of customers in system. This test requires at least 5.');
         }
     }
 
     private function guardAgainstSmallNumberOfCustomerBankAccounts()
     {
-        if (count($this->api->listCustomerBankAccounts()) < 5)
-        {
+        if (count($this->api->listCustomerBankAccounts()) < 5) {
             $this->markTestSkipped('Skipping test due to lack of customer bank accounts in system. This test requires at least 5.');
         }
     }
 
     private function guardAgainstSmallNumberOfCreditors()
     {
-        if (count($this->api->listCreditors()) < 5)
-        {
+        if (count($this->api->listCreditors()) < 5) {
             $this->markTestSkipped('Skipping test due to lack of creditors in system. This test requires at least 5.');
         }
     }
 
     private function guardAgainstSmallNumberOfCreditorBankAccounts()
     {
-        if (count($this->api->listCreditorBankAccounts()) < 5)
-        {
+        if (count($this->api->listCreditorBankAccounts()) < 5) {
             $this->markTestSkipped('Skipping test due to lack of creditor bank accounts in system. This test requires at least 5.');
         }
     }
 
     private function guardAgainstSmallNumberOfMandates()
     {
-        if (count($this->api->listMandates()) < 5)
-        {
+        if (count($this->api->listMandates()) < 5) {
             $this->markTestSkipped('Skipping test due to lack of mandates in system. This test requires at least 5.');
         }
     }
