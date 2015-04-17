@@ -210,6 +210,20 @@ class Api
     }
 
     /**
+     * @param int $limit
+     * @return array
+     */
+    public function listCustomerBankAccountsForCustomer($id, $limit = 25)
+    {
+        $response = $this->get(self::CUSTOMER_BANK_ACCOUNTS, [
+            'limit' => intval($limit),
+            'customer' => $id
+        ]);
+
+        return $this->buildCollection(new CustomerBankAccount, $response);
+    }
+
+    /**
      * Return a single customer bank account
      *
      * @param $id
