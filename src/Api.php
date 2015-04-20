@@ -454,6 +454,7 @@ class Api
      * @throws InvalidStateException
      * @throws ResourceNotFoundException
      * @throws ValidationException
+     * @throws VersionNotFoundException
      */
     private function handleBadResponseException(BadResponseException $ex)
     {
@@ -493,6 +494,7 @@ class Api
      * @param BadResponseException $ex
      * @param array $response
      * @throws ResourceNotFoundException
+     * @throws VersionNotFoundException
      */
     private function handleInvalidApiUsage(BadResponseException $ex, $response)
     {

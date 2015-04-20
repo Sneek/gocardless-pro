@@ -8,21 +8,40 @@ use GoCardless\Pro\Models\CustomerBankAccount;
 use GoCardless\Pro\Models\Mandate;
 use GoCardless\Pro\Models\Payment;
 use GuzzleHttp\Client;
+use GuzzleHttp\Stream\Stream;
+use GuzzleHttp\Subscriber\Mock;
+use GuzzleHttp\Message\Response;
 
 class ApiTest extends \PHPUnit_Framework_TestCase
 {
     use Fixtures;
+
+    /*
+     * @var GuzzleHttp\Client;
+     */
+    protected $client;
 
     /**
      * @var \GoCardless\Pro\Api
      */
     protected $api;
 
+    /*
+     * @var array
+     */
+    protected $config;
+
     public function setUp()
     {
-        $config = require __DIR__ . '/../config.php';
+        $this->config = require __DIR__ . '/../config.php';
+        $this->client = new Client;
 
-        $this->api = new Api(new Client, $config['username'], $config['password'], $config['version']);
+        $this->api = new Api(
+            $this->client,
+            $this->config['username'],
+            $this->config['password'],
+            $this->config['version']
+        );
     }
 
     /** @test */
@@ -461,6 +480,29 @@ class ApiTest extends \PHPUnit_Framework_TestCase
         $this->setExpectedException('GoCardless\Pro\Exceptions\ValidationException');
 
         $this->api->createCustomer($this->get_invalid_customer());
+    }
+
+    /** @group Exceptions */
+    function test_it_throws_version_not_found_exception_if_api_returns_this_error()
+    {
+        $this->setExpectedException('GoCardless\Pro\Exceptions\VersionNotFoundException', 'Version not found', 400);
+
+        $response = new Response(400, [], Stream::factory('{"error":{"message":"Version XXX header must be formatted as ISO8601 (YYYY-MM-DD)","errors":[{"reason":"version_not_found","message":"Version header must be formatted as ISO8601 (YYYY-MM-DD)"}],"documentation_url":"https:\/\/developer.gocardless.com\/pro#version_not_found","type":"invalid_api_usage","request_id":"c717681f-9b38-4f5f-8d7f-21305026f62e","code":400}}'));
+        $this->mockNextResponse($response);
+
+        $this->api->listCreditors();
+    }
+
+    /**
+     * Attach a mock response subscriber for the next request.
+     *
+     * This will enable us to test reponses without having to call the external API directly.
+     */
+    private function mockNextResponse(Response $response)
+    {
+        $mock = new Mock([$response]);
+
+        $this->client->getEmitter()->attach($mock);
     }
 
     /**
