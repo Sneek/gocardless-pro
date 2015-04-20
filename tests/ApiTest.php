@@ -460,6 +460,22 @@ class ApiTest extends \PHPUnit_Framework_TestCase
         $this->api->createCustomer($this->get_invalid_customer());
     }
 
+    /** @group Exceptions */
+    function test_it_throws_version_not_found_exception_if_api_returns_this_error()
+    {
+        $this->setExpectedException(
+            'GoCardless\Pro\Exceptions\VersionNotFoundException',
+            'Version not found',
+            400
+        );
+
+        $config = require __DIR__ . '/../config.php';
+
+        $api = new Api(new Client, $config['username'], $config['password'], '1970-01-01');
+
+        $api->listCustomers();
+    }
+
     /**
      * A simple guard to make sure the account has enough customers to limit.
      * In the future GoCardless will allow purging of account which will mean

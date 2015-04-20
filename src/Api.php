@@ -2,6 +2,7 @@
 
 use GoCardless\Pro\Exceptions\InvalidStateException;
 use GoCardless\Pro\Exceptions\ResourceNotFoundException;
+use GoCardless\Pro\Exceptions\VersionNotFoundException;
 use GoCardless\Pro\Exceptions\ValidationException;
 use GoCardless\Pro\Models\Creditor;
 use GoCardless\Pro\Models\CreditorBankAccount;
@@ -453,6 +454,7 @@ class Api
      * @throws InvalidStateException
      * @throws ResourceNotFoundException
      * @throws ValidationException
+     * @throws VersionNotFoundException
      */
     private function handleBadResponseException(BadResponseException $ex)
     {
@@ -492,6 +494,7 @@ class Api
      * @param BadResponseException $ex
      * @param array $response
      * @throws ResourceNotFoundException
+     * @throws VersionNotFoundException
      */
     private function handleInvalidApiUsage(BadResponseException $ex, $response)
     {
@@ -499,6 +502,11 @@ class Api
             case 'resource_not_found' :
                 throw new ResourceNotFoundException(
                     sprintf('Resource not found at %s', $ex->getRequest()->getResource()),
+                    $ex->getCode()
+                );
+            case 'version_not_found' :
+                throw new VersionNotFoundException(
+                    'Version not found',
                     $ex->getCode()
                 );
         }
