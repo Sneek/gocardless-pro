@@ -8,6 +8,9 @@ abstract class Entity
     /** @var string */
     protected $created_at;
 
+    /** @var array */
+    protected $links = [];
+
     /**
      * @param $id
      * @return static
@@ -42,5 +45,13 @@ abstract class Entity
     public function getCreatedAt()
     {
         return $this->created_at;
+    }
+
+    /**
+     * @return array
+     */
+    public function getLinks()
+    {
+        return $this->links;
     }
 }
