@@ -8,6 +8,9 @@ abstract class Entity
     /** @var string */
     protected $created_at;
 
+    /** @var array */
+    protected $links = [];
+
     /**
      * @param $id
      * @return static
