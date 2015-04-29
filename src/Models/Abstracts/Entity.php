@@ -46,4 +46,12 @@ abstract class Entity
     {
         return $this->created_at;
     }
+
+    /**
+     * @return array
+     */
+    public function getLinks()
+    {
+        return $this->links;
+    }
 }
