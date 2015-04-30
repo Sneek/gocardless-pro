@@ -36,12 +36,7 @@ class Api
     /**
      * @var string
      */
-    private $username;
-
-    /**
-     * @var string
-     */
-    private $password;
+    private $accessToken;
 
     /**
      * @var string
@@ -53,11 +48,10 @@ class Api
      */
     private $environment;
 
-    public function __construct(Client $client, $username, $password, $version, $environment = 'staging')
+    public function __construct(Client $client, $accessToken, $version, $environment = 'staging')
     {
         $this->client      = $client;
-        $this->username    = $username;
-        $this->password    = $password;
+        $this->accessToken = $accessToken;
         $this->version     = $version;
         $this->environment = $environment === 'production' ? 'production' : 'staging';
     }
@@ -382,8 +376,7 @@ class Api
 
             $response = $this->client->post($this->url($endpoint, $path), [
                 'headers' => $headers,
-                'json'    => $payload,
-                'auth'    => [$this->username, $this->password]
+                'json'    => $payload
             ]);
         } catch (BadResponseException $ex) {
             $this->handleBadResponseException($ex);
@@ -413,8 +406,7 @@ class Api
 
         try {
             $response = $this->client->get($this->url($endpoint, $path), [
-                'headers' => $headers,
-                'auth'    => [$this->username, $this->password]
+                'headers' => $headers
             ]);
         } catch (BadResponseException $ex) {
             $this->handleBadResponseException($ex);
@@ -491,8 +483,7 @@ class Api
         try {
             $response = $this->client->get($this->url($endpoint, $path), [
                 'headers' => $this->headers(),
-                'query'   => $params,
-                'auth'    => [$this->username, $this->password]
+                'query'   => $params
             ])->json();
         } catch (BadResponseException $ex) {
             $this->handleBadResponseException($ex);
@@ -542,8 +533,7 @@ class Api
 
             $response = $this->client->$method($this->url($endpoint, $path), [
                 'headers' => $this->headers(),
-                'json'    => $payload,
-                'auth'    => [$this->username, $this->password]
+                'json'    => $payload
             ])->json();
         } catch (BadResponseException $ex) {
             $this->handleBadResponseException($ex);
@@ -580,7 +570,8 @@ class Api
     {
         return [
             'GoCardless-Version' => $this->version,
-            'Content-Type'       => 'application/json'
+            'Content-Type'       => 'application/json',
+            'Authorization'      => sprintf('Bearer %s', $this->accessToken)
         ];
     }
 
