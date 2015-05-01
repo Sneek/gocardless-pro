@@ -23,7 +23,7 @@ use GoCardless\Pro\Models\Payment;
  * @link https://manage-sandbox.gocardless.com/organisation
  * @link https://developer.gocardless.com/pro/#overview-backwards-compatibility
  */
-$api = new Api(new Client, 'API_ID', 'API_KEY', '2014-11-03');
+$api = new Api(new Client, 'ACCESS_TOKEN', '2015-04-29');
 
 /** On with the show */
 
