@@ -22,7 +22,7 @@ class ApiTest extends \PHPUnit_Framework_TestCase
     {
         $config = require __DIR__ . '/../config.php';
 
-        $this->api = new Api(new Client, $config['username'], $config['password'], $config['version']);
+        $this->api = new Api(new Client, $config['accessToken'], $config['version']);
     }
 
     /** @test */
@@ -30,8 +30,7 @@ class ApiTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertInstanceOf('GoCardless\Pro\Api', $this->api);
         $this->assertAttributeInstanceOf('GuzzleHttp\Client', 'client', $this->api);
-        $this->assertAttributeNotEmpty('username', $this->api);
-        $this->assertAttributeNotEmpty('password', $this->api);
+        $this->assertAttributeNotEmpty('accessToken', $this->api);
         $this->assertAttributeEquals('staging', 'environment', $this->api);
     }
 
@@ -471,7 +470,7 @@ class ApiTest extends \PHPUnit_Framework_TestCase
 
         $config = require __DIR__ . '/../config.php';
 
-        $api = new Api(new Client, $config['username'], $config['password'], '1970-01-01');
+        $api = new Api(new Client, $config['accessToken'], '1970-01-01');
 
         $api->listCustomers();
     }
