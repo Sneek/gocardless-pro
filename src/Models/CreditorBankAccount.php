@@ -1,9 +1,12 @@
 <?php namespace GoCardless\Pro\Models;
 
 use GoCardless\Pro\Models\Abstracts\BankAccount;
+use GoCardless\Pro\Models\Traits\Metadata;
 
 class CreditorBankAccount extends BankAccount
 {
+    use Metadata;
+
     /** @var Creditor */
     protected $creditor;
 

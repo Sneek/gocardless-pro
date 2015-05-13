@@ -2,10 +2,12 @@
 
 use GoCardless\Pro\Models\Abstracts\Entity;
 use GoCardless\Pro\Models\Traits\Factory;
+use GoCardless\Pro\Models\Traits\Metadata;
 
 class Mandate extends Entity
 {
     use Factory;
+    use Metadata;
 
     /**
      * @var CustomerBankAccount
