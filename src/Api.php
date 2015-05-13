@@ -400,12 +400,15 @@ class Api
      *
      * @see https://developer.gocardless.com/pro/#mandates-get-a-single-mandate
      *
-     * @param string $id Mandate ID e.g. MD123
+     * @param string|Mandate $id Mandate ID e.g. MD123 or a Mandate object
      *
      * @return GuzzleHttp\Stream\StreamInterface
      */
     public function getMandatePdf($id)
     {
+        if ($id instanceof Mandate) {
+            $id = $id->getId();
+        }
         $endpoint          = self::MANDATES;
         $path              = $id;
         $headers           = $this->headers();
