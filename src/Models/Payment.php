@@ -232,6 +232,17 @@ class Payment
     {
         return $this->reference;
     }
+    
+    /**
+     * @param $reference
+     * @return $this
+     */
+    public function setReference($reference)
+    {
+        $this->reference = $reference;
+        
+        return $this;
+    }
 
     /**
      * @return int
