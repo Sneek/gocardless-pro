@@ -1,10 +1,12 @@
 <?php namespace GoCardless\Pro\Models;
 
 use GoCardless\Pro\Models\Traits\Factory;
+use GoCardless\Pro\Models\Traits\Metadata;
 
 class Payment
 {
     use Factory;
+    use Metadata;
 
     /** @var string */
     private $id;

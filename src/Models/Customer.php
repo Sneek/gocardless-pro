@@ -1,9 +1,12 @@
 <?php namespace GoCardless\Pro\Models;
 
 use GoCardless\Pro\Models\Abstracts\Party;
+use GoCardless\Pro\Models\Traits\Metadata;
 
 class Customer extends Party
 {
+    use Metadata;
+
     /** @var string */
     protected $email;
     /** @var string */
