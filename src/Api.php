@@ -1,10 +1,10 @@
 <?php namespace GoCardless\Pro;
 
+use GoCardless\Pro\Exceptions\InvalidDocumentStructureException;
 use GoCardless\Pro\Exceptions\InvalidStateException;
 use GoCardless\Pro\Exceptions\ResourceNotFoundException;
-use GoCardless\Pro\Exceptions\VersionNotFoundException;
 use GoCardless\Pro\Exceptions\ValidationException;
-use GoCardless\Pro\Exceptions\InvalidDocumentStructureException;
+use GoCardless\Pro\Exceptions\VersionNotFoundException;
 use GoCardless\Pro\Models\Abstracts\Entity;
 use GoCardless\Pro\Models\Creditor;
 use GoCardless\Pro\Models\CreditorBankAccount;
@@ -25,8 +25,8 @@ class Api
     const PAYMENTS               = 'payments';
     const HELPERS                = 'helpers';
 
-    const SANDBOX_URL            = 'https://api-sandbox.gocardless.com/';
-    const PRODUCTION_URL         = 'https://api.gocardless.com/';
+    const SANDBOX_URL    = 'https://api-sandbox.gocardless.com/';
+    const PRODUCTION_URL = 'https://api.gocardless.com/';
 
     /**
      * @var Client
@@ -114,7 +114,6 @@ class Api
 
     /**
      * @see https://developer.gocardless.com/pro/#creditor-bank-accounts-create-a-creditor-bank-account
-
      * @param CreditorBankAccount $account
      *
      * @return CreditorBankAccount
@@ -128,7 +127,6 @@ class Api
 
     /**
      * @see https://developer.gocardless.com/pro/#creditor-bank-accounts-list-creditor-bank-accounts
-
      * @param array $options
      *
      * @return array
@@ -184,7 +182,6 @@ class Api
 
     /**
      * @see https://developer.gocardless.com/pro/#customers-update-a-customer
-
      * @param Customer $customer
      *
      * @return Customer
@@ -362,14 +359,13 @@ class Api
      *
      * @param array $options Endpoint options (for prefilling mandate)
      *
-     * @return GuzzleHttp\Stream\StreamInterface
+     * @return \GuzzleHttp\Stream\StreamInterface
      */
     public function createMandatePdf($options = [])
     {
-        $endpoint          = self::HELPERS;
-        $path              = '/mandate';
-        $headers           = $this->headers();
-        $headers['Accept'] = 'application/pdf';
+        $endpoint = self::HELPERS;
+        $path     = '/mandate';
+        $headers  = $this->headers(['Accept' => 'application/pdf']);
 
         try {
             $payload = ['data' => $options];
@@ -395,17 +391,17 @@ class Api
      *
      * @param string|Mandate $id Mandate ID e.g. MD123 or a Mandate object
      *
-     * @return GuzzleHttp\Stream\StreamInterface
+     * @return \GuzzleHttp\Stream\StreamInterface
      */
     public function getMandatePdf($id)
     {
         if ($id instanceof Mandate) {
             $id = $id->getId();
         }
-        $endpoint          = self::MANDATES;
-        $path              = $id;
-        $headers           = $this->headers();
-        $headers['Accept'] = 'application/pdf';
+
+        $endpoint = self::MANDATES;
+        $path     = $id;
+        $headers  = $this->headers(['Accept' => 'application/pdf']);
 
         try {
             $response = $this->client->get($this->url($endpoint, $path), [
@@ -476,7 +472,7 @@ class Api
 
     /**
      * @param string $endpoint
-     * @param array  $params
+     * @param array $params
      * @param string $path
      *
      * @return array
@@ -497,7 +493,7 @@ class Api
 
     /**
      * @param string $endpoint
-     * @param array  $data
+     * @param array $data
      * @param string $path
      *
      * @return array
@@ -509,7 +505,7 @@ class Api
 
     /**
      * @param string $endpoint
-     * @param array  $data
+     * @param array $data
      * @param string $path
      *
      * @return array
@@ -522,7 +518,7 @@ class Api
     /**
      * @param string $method
      * @param string $endpoint
-     * @param array  $data
+     * @param array $data
      * @param string $path
      *
      * @return mixed
@@ -567,20 +563,21 @@ class Api
     }
 
     /**
+     * @param array $additional
      * @return array
      */
-    private function headers()
+    private function headers($additional = [])
     {
-        return [
+        return array_merge([
             'GoCardless-Version' => $this->version,
             'Content-Type'       => 'application/json',
             'Authorization'      => sprintf('Bearer %s', $this->accessToken)
-        ];
+        ], $additional);
     }
 
     /**
      * @param Entity $model
-     * @param array  $response
+     * @param array $response
      *
      * @return array
      */
@@ -641,7 +638,7 @@ class Api
 
     /**
      * @param BadResponseException $ex
-     * @param array                $response
+     * @param array $response
      *
      * @throws ResourceNotFoundException
      * @throws VersionNotFoundException
