@@ -33,15 +33,16 @@ trait Metadata
      *
      * Optionally specify a single key to retrieve
      *
+     * @param null $key
      * @return array
      */
     public function getMetadata($key = null)
     {
-        if (!$key) {
+        if ( ! $key) {
             return $this->metadata;
         }
 
-        if (!isset($this->metadata[$key])) {
+        if ( ! isset($this->metadata[$key])) {
             return null;
         }
 
