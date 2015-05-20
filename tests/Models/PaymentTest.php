@@ -83,4 +83,13 @@ class PaymentTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('WINEBOX001', $payment->getReference());
         $this->assertSame(0, $payment->getAmountRefunded());
     }
+
+    /** @test */
+    function it_allows_the_reference_to_be_set()
+    {
+        $payment = new Payment;
+
+        $this->assertSame($payment, $payment->setReference('FooBar'));
+        $this->assertEquals('FooBar', $payment->getReference());
+    }
 }
