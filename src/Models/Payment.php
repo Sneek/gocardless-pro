@@ -1,17 +1,14 @@
 <?php namespace GoCardless\Pro\Models;
 
+use GoCardless\Pro\Models\Abstracts\Entity;
 use GoCardless\Pro\Models\Traits\Factory;
 use GoCardless\Pro\Models\Traits\Metadata;
 
-class Payment
+class Payment extends Entity
 {
     use Factory;
     use Metadata;
 
-    /** @var string */
-    private $id;
-    /** @var string */
-    private $created_at;
     /** @var string */
     private $charge_date;
     /** @var string */
@@ -67,22 +64,6 @@ class Payment
     public function on($date)
     {
         return $this->setChargeDate($date);
-    }
-
-    /**
-     * @return string
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCreatedAt()
-    {
-        return $this->created_at;
     }
 
     /**
