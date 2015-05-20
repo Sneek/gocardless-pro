@@ -241,9 +241,9 @@ class Payment extends Entity
         $payment = array_filter(get_object_vars($this));
 
         if ($this->mandate instanceof Mandate) {
-            unset($payment['mandate']);
             $payment['links']['mandate'] = $this->mandate->getId();
         }
+        unset($payment['mandate']);
 
         return $payment;
     }
