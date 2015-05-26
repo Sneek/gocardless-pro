@@ -614,10 +614,10 @@ class Api
                 );
 
             case 'validation_failed' :
-                return $this->handleValidationFailedErrors($response);
+                $this->handleValidationFailedErrors($response);
 
             case 'invalid_api_usage' :
-                return $this->handleInvalidApiUsage($ex, $response);
+                $this->handleInvalidApiUsage($ex, $response);
         }
 
         throw $ex;
