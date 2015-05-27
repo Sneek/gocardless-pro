@@ -12,6 +12,7 @@ use GoCardless\Pro\Models\Customer;
 use GoCardless\Pro\Models\CustomerBankAccount;
 use GoCardless\Pro\Models\Mandate;
 use GoCardless\Pro\Models\Payment;
+use GoCardless\Pro\Models\RedirectFlow;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\BadResponseException;
 
@@ -23,6 +24,7 @@ class Api
     const CUSTOMER_BANK_ACCOUNTS = 'customer_bank_accounts';
     const MANDATES               = 'mandates';
     const PAYMENTS               = 'payments';
+    const REDIRECT_FLOWS         = 'redirect_flows';
     const HELPERS                = 'helpers';
 
     const SANDBOX_URL    = 'https://api-sandbox.gocardless.com/';
@@ -468,6 +470,59 @@ class Api
         $response = $this->post(self::PAYMENTS, [], $id . '/actions/retry');
 
         return Payment::fromArray($response);
+    }
+
+    /**
+     * @see https://developer.gocardless.com/pro/#redirect-flows-create-a-redirect-flow
+     *
+     * @param RedirectFlow $redirectFlow Redirect Flow Entity
+     *
+     * @return RedirectFlow
+     */
+    public function createRedirectFlow(RedirectFlow $redirectFlow)
+    {
+        $response = $this->post(self::REDIRECT_FLOWS, $redirectFlow->toArray());
+
+        return RedirectFlow::fromArray($response);
+    }
+
+    /**
+     * @see https://developer.gocardless.com/pro/#redirect-flows-get-a-single-redirect-flow
+     *
+     * @param string $id Redirect Flow ID
+     *
+     * @return RedirectFlow
+     */
+    public function getRedirectFlow($id)
+    {
+        $response = $this->get(self::REDIRECT_FLOWS, [], $id);
+
+        return RedirectFlow::fromArray($response);
+    }
+
+    /**
+     * @see https://developer.gocardless.com/pro/#redirect-flows-complete-a-redirect-flow
+     *
+     * @param string $id           Redirect Flow ID
+     * @param string $sessionToken Session token used to create the flow
+     *
+     * @return RedirectFlow
+     */
+    public function completeRedirectFlow($id, $sessionToken)
+    {
+        try {
+            $response = $this->client->post(
+                $this->url(self::REDIRECT_FLOWS, $id . '/actions/complete'), [
+                    'headers' => $this->headers(),
+                    'json' => ['data' => ['session_token' => $sessionToken]]
+                ]
+            )->json();
+
+        } catch (BadResponseException $ex) {
+            $this->handleBadResponseException($ex);
+        }
+
+        return RedirectFlow::fromArray($response[self::REDIRECT_FLOWS]);
     }
 
     /**
