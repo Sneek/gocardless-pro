@@ -13,6 +13,7 @@ abstract class Entity
 
     /**
      * @param $id
+     *
      * @return static
      */
     public static function withId($id)
@@ -30,6 +31,7 @@ abstract class Entity
 
     /**
      * @param string $id
+     *
      * @return $this
      */
     public function setId($id)
@@ -48,10 +50,28 @@ abstract class Entity
     }
 
     /**
+     * Return all links associated with the Entity
+     *
      * @return array
      */
     public function getLinks()
     {
         return $this->links;
+    }
+
+    /**
+     * Return a single link from the entity
+     *
+     * @param string $link Key of link to return
+     *
+     * @return string Link ID or null if not set
+     */
+    public function getLink($link)
+    {
+        if (!isset($this->links[$link])) {
+            return null;
+        }
+
+        return $this->links[$link];
     }
 }
