@@ -475,6 +475,36 @@ class ApiTest extends \PHPUnit_Framework_TestCase
         $api->listCustomers();
     }
 
+    /** @group Exceptions */
+    function test_it_throws_authentication_failed_exception()
+    {
+        $this->setExpectedException('\GoCardless\Pro\Exceptions\AuthenticationException');
+
+        $config = require __DIR__ . '/../config.php';
+
+        $api = new Api(new Client, 'invalid_api_token', $config['version']);
+
+        $api->listCustomers();
+    }
+
+    /** @group Exceptions */
+    function test_it_throws_an_exception_if_the_token_doesnt_have_permission()
+    {
+        $config = require __DIR__ . '/../config.php';
+
+        if ( ! array_key_exists('readOnlyAccessToken', $config)) {
+            $this->markTestSkipped('You must set a read only token in the $config[readOnlyAccessToken] to run this test');
+        }
+
+        $this->setExpectedException('\GoCardless\Pro\Exceptions\AuthenticationException');
+
+        $api = new Api(new Client, $config['readOnlyAccessToken'], $config['version']);
+
+        $customer = $this->get_basic_customer();
+
+        $api->createCustomer($customer);
+    }
+
     /**
      * A simple guard to make sure the account has enough customers to limit.
      * In the future GoCardless will allow purging of account which will mean

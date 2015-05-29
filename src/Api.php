@@ -1,5 +1,6 @@
 <?php namespace GoCardless\Pro;
 
+use GoCardless\Pro\Exceptions\AuthenticationException;
 use GoCardless\Pro\Exceptions\InvalidDocumentStructureException;
 use GoCardless\Pro\Exceptions\InvalidStateException;
 use GoCardless\Pro\Exceptions\ResourceNotFoundException;
@@ -640,9 +641,10 @@ class Api
      * @param BadResponseException $ex
      * @param array $response
      *
+     * @throws AuthenticationException
+     * @throws InvalidDocumentStructureException
      * @throws ResourceNotFoundException
      * @throws VersionNotFoundException
-     * @throws InvalidDocumentStructureException
      */
     private function handleInvalidApiUsage(BadResponseException $ex, array $response)
     {
@@ -659,6 +661,12 @@ class Api
                 );
             case 'invalid_document_structure':
                 throw new InvalidDocumentStructureException(
+                    $response['error']['message'],
+                    $ex->getCode()
+                );
+            case 'access_token_not_found' :
+            case 'insufficient_permissions' :
+                throw new AuthenticationException(
                     $response['error']['message'],
                     $ex->getCode()
                 );
