@@ -418,6 +418,55 @@ class Api
     }
 
     /**
+     * Modulus Check on bank account
+     * Checks the if bank details are valid and returns the api message.
+     *
+     * https://developer.gocardless.com/pro/#helpers-mandate-pdf
+     *
+     * @param CustomerBankAccount $account
+     *
+     * @return string
+     */
+    public function modulusCheck(CustomerBankAccount $account)
+    {
+        $endpoint = self::HELPERS;
+        $path     = 'modulus_check';
+        $headers  = $this->headers();
+
+        try {
+            $payload = ['data' => $account->toArray()];
+
+            $response = $this->client->post($this->url($endpoint, $path), [
+                'headers' => $headers,
+                'json'    => $payload
+            ]);
+
+            return true;
+
+        } catch (BadResponseException $ex) {
+            if ($ex->getResponse()->getStatusCode() !== 422) {
+                return 'Error - There was an error checking if the account number was valid - ' . $ex->getMessage();
+            }
+
+            $data = $ex->getResponse()->json();
+
+            $message = '';
+
+            foreach($data['error']['errors'] as $error) {
+                if ($error['field'] === 'branch_code') {
+                    $error['field'] = 'sort_code';
+                }
+
+                $field = ucwords(str_replace('_', ' ', $error['field']));
+                $message .= $field . ' ' . $error['message'];
+            }
+
+            return 'Invalid - ' . $message;
+        }
+
+    }
+
+    /**
      * @see https://developer.gocardless.com/pro/#payments-create-a-payment
      *
      * @param Payment $payment
