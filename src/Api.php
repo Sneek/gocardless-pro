@@ -434,7 +434,14 @@ class Api
         $headers  = $this->headers();
 
         try {
-            $payload = ['data' => $account->toArray()];
+            $payload = [
+                'data' =>
+                    [
+                        'account_number' => $account->getAccountNumber(),
+                        'branch_code' => $account->getBranchCode(),
+                        'country_code' => $account->getCountryCode()
+                    ]
+            ];
 
             $response = $this->client->post($this->url($endpoint, $path), [
                 'headers' => $headers,

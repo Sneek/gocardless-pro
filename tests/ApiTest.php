@@ -544,4 +544,10 @@ class ApiTest extends \PHPUnit_Framework_TestCase
             $this->markTestSkipped('Skipping test due to lack of mandates in system. This test requires at least 5.');
         }
     }
+
+    /** @test */
+    public function it_returns_modulus_check(CustomerBankAccount $account)
+    {
+        $this->api->modulusCheck($account);
+    }
 }
