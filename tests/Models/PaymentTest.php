@@ -1,4 +1,5 @@
-<?php namespace GoCardless\Pro\Tests\Models;
+<?php
+namespace GoCardless\Pro\Tests\Models;
 
 use GoCardless\Pro\Models\Mandate;
 use GoCardless\Pro\Models\Payment;
@@ -37,8 +38,8 @@ class PaymentTest extends \PHPUnit_Framework_TestCase
     {
         $payment = new Payment;
         $payment->setAmount(300)->setCurrency('GBP')->setChargeDate('2014-05-19')
-                ->setDescription('My simple description')
-                ->setMandate(Mandate::fromArray(['id' => 'MD123']));
+            ->setDescription('My simple description')
+            ->setMandate(Mandate::fromArray(['id' => 'MD123']));
 
         $this->assertEquals([
             'amount'      => '300',

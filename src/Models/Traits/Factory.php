@@ -1,10 +1,12 @@
-<?php namespace GoCardless\Pro\Models\Traits;
+<?php
 
+namespace GoCardless\Pro\Models\Traits;
 
 trait Factory
 {
     /**
      * @param $details
+     *
      * @return static
      */
     public static function fromArray($details)

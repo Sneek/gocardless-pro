@@ -1,4 +1,5 @@
-<?php namespace GoCardless\Pro\Tests\Models;
+<?php
+namespace GoCardless\Pro\Tests\Models;
 
 class EntityTest extends \PHPUnit_Framework_TestCase
 {
@@ -23,5 +24,13 @@ class EntityTest extends \PHPUnit_Framework_TestCase
         $entity = BasicEntity::fromArray(['links' => ['customer_id' => 'CU12345']]);
 
         $this->assertEquals('CU12345', $entity->getLink('customer_id'));
+    }
+
+    /** @test */
+    function it_returns_null_if_link_not_found()
+    {
+        $entity = new BasicEntity;
+
+        $this->assertNull($entity->getLink('foo'));
     }
 }

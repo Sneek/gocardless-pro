@@ -1,4 +1,5 @@
-<?php namespace GoCardless\Pro\Tests\Models;
+<?php
+namespace GoCardless\Pro\Tests\Models;
 
 use GoCardless\Pro\Models\Customer;
 use GoCardless\Pro\Tests\Fixtures;
@@ -47,7 +48,7 @@ class CustomerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('John', $customer->getForename());
         $this->assertEquals('Doe', $customer->getSurname());
         $this->assertEquals([
-            'given_name' => 'John',
+            'given_name'  => 'John',
             'family_name' => 'Doe',
         ], $customer->toArray());
 
@@ -56,7 +57,7 @@ class CustomerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('Jane', $customer->getFirstName());
         $this->assertEquals('Smith', $customer->getLastName());
         $this->assertEquals([
-            'given_name' => 'Jane',
+            'given_name'  => 'Jane',
             'family_name' => 'Smith',
         ], $customer->toArray());
     }

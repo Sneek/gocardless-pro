@@ -4,7 +4,6 @@ namespace GoCardless\Pro\Models;
 
 use GoCardless\Pro\Models\Abstracts\Entity;
 use GoCardless\Pro\Models\Traits\Factory;
-use GoCardless\Pro\Models\Traits\Metadata;
 
 /**
  * Redirect flow entity
@@ -100,34 +99,6 @@ class RedirectFlow extends Entity
     }
 
     /**
-     * Set the success redirect URL
-     *
-     * @param string $successRedirectUrl Url to redirect user to after completion
-     *
-     * @return $this
-     */
-    public function setSuccessRedirectUrl($successRedirectUrl)
-    {
-        $this->success_redirect_url = $successRedirectUrl;
-
-        return $this;
-    }
-
-    /**
-     * Sets scheme internally. Use specific setter e.g. useBacs publically
-     *
-     * @param string $scheme Scheme type
-     *
-     * @return $this
-     */
-    protected function setScheme($scheme)
-    {
-        $this->scheme = $scheme;
-
-        return $this;
-    }
-
-    /**
      * Set to use the bacs scheme for the resulting mandate
      *
      * @return Mandate
@@ -148,6 +119,16 @@ class RedirectFlow extends Entity
     }
 
     /**
+     * Is the scheme bacs?
+     *
+     * @return bool
+     */
+    public function isBacs()
+    {
+        return $this->getScheme() === 'bacs';
+    }
+
+    /**
      * Gets the Direct Debit scheme
      *
      * @return string
@@ -158,13 +139,17 @@ class RedirectFlow extends Entity
     }
 
     /**
-     * Is the scheme bacs?
+     * Sets scheme internally. Use specific setter e.g. useBacs publically
      *
-     * @return bool
+     * @param string $scheme Scheme type
+     *
+     * @return $this
      */
-    public function isBacs()
+    protected function setScheme($scheme)
     {
-        return $this->getScheme() === 'bacs';
+        $this->scheme = $scheme;
+
+        return $this;
     }
 
     /**
@@ -205,6 +190,20 @@ class RedirectFlow extends Entity
     public function getSuccessRedirectUrl()
     {
         return $this->success_redirect_url;
+    }
+
+    /**
+     * Set the success redirect URL
+     *
+     * @param string $successRedirectUrl Url to redirect user to after completion
+     *
+     * @return $this
+     */
+    public function setSuccessRedirectUrl($successRedirectUrl)
+    {
+        $this->success_redirect_url = $successRedirectUrl;
+
+        return $this;
     }
 
     /**

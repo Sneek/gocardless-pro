@@ -1,4 +1,6 @@
-<?php namespace GoCardless\Pro\Models;
+<?php
+
+namespace GoCardless\Pro\Models;
 
 use GoCardless\Pro\Models\Abstracts\Entity;
 use GoCardless\Pro\Models\Traits\Factory;
@@ -48,6 +50,7 @@ class Mandate extends Entity
 
     /**
      * @param CustomerBankAccount $account
+     *
      * @return $this
      */
     public function setCustomerBankAccount(CustomerBankAccount $account = null)
@@ -59,6 +62,7 @@ class Mandate extends Entity
 
     /**
      * @param Creditor $creditor
+     *
      * @return $this
      */
     public function setCreditor(Creditor $creditor = null)
@@ -70,6 +74,7 @@ class Mandate extends Entity
 
     /**
      * @param $scheme
+     *
      * @return $this
      */
     protected function setScheme($scheme)

@@ -1,6 +1,6 @@
-<?php namespace GoCardless\Pro\Exceptions;
+<?php
 
-use Exception;
+namespace GoCardless\Pro\Exceptions;
 
 class InvalidStateException extends \Exception
 {
@@ -12,8 +12,8 @@ class InvalidStateException extends \Exception
     public function __construct($message, $code, $errors = [])
     {
         $this->message = $message;
-        $this->code = $code;
-        $this->errors = $errors;
+        $this->code    = $code;
+        $this->errors  = $errors;
     }
 
     public function getErrors()

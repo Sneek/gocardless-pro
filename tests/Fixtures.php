@@ -49,6 +49,7 @@ trait Fixtures
 
     /**
      * @param Customer $customer
+     *
      * @return CustomerBankAccount
      */
     public function get_customer_bank_account(Customer $customer = null)
@@ -62,6 +63,7 @@ trait Fixtures
 
     /**
      * @param Customer $customer
+     *
      * @return CustomerBankAccount
      */
     public function get_customer_full_bank_account(Customer $customer = null)
@@ -75,6 +77,7 @@ trait Fixtures
 
     /**
      * @param Creditor $creditor
+     *
      * @return CreditorBankAccount
      */
     public function get_creditor_bank_account(Creditor $creditor = null)
@@ -83,13 +86,14 @@ trait Fixtures
         $account  = CreditorBankAccount::fromArray($this->basic_bank_account_details());
 
         $account->setAccountHolderName('Nude Wines')
-                ->setOwner($creditor);
+            ->setOwner($creditor);
 
         return $account;
     }
 
     /**
      * @param Creditor $creditor
+     *
      * @return CreditorBankAccount
      */
     public function get_creditor_full_bank_account(Creditor $creditor = null)
@@ -98,7 +102,7 @@ trait Fixtures
         $account  = CreditorBankAccount::fromArray($this->full_bank_account_details());
 
         $account->setAccountHolderName('Nude Wines')
-                ->setOwner($creditor);
+            ->setOwner($creditor);
 
         return $account;
     }

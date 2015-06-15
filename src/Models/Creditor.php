@@ -1,4 +1,6 @@
-<?php namespace GoCardless\Pro\Models;
+<?php
+
+namespace GoCardless\Pro\Models;
 
 use GoCardless\Pro\Models\Abstracts\Party;
 use GoCardless\Pro\Models\Traits\Factory;
@@ -20,6 +22,7 @@ class Creditor extends Party
 
     /**
      * @param $name
+     *
      * @return $this
      */
     public function setName($name)

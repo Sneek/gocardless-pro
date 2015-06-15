@@ -1,4 +1,6 @@
-<?php namespace GoCardless\Pro\Models\Abstracts;
+<?php
+
+namespace GoCardless\Pro\Models\Abstracts;
 
 use GoCardless\Pro\Models\Traits\Factory;
 
@@ -29,6 +31,7 @@ abstract class BankAccount extends Entity
 
     /**
      * @param $sort_code
+     *
      * @return $this
      */
     public function setSortCode($sort_code)
@@ -57,7 +60,7 @@ abstract class BankAccount extends Entity
      */
     public function isDisabled()
     {
-        return !$this->isEnabled();
+        return ! $this->isEnabled();
     }
 
     /**
@@ -78,6 +81,7 @@ abstract class BankAccount extends Entity
 
     /**
      * @param $account_holder_name
+     *
      * @return $this
      */
     public function setAccountHolderName($account_holder_name)
@@ -97,6 +101,7 @@ abstract class BankAccount extends Entity
 
     /**
      * @param $account_number
+     *
      * @return $this
      */
     public function setAccountNumber($account_number)
@@ -124,6 +129,7 @@ abstract class BankAccount extends Entity
 
     /**
      * @param $branch_code
+     *
      * @return $this
      */
     public function setBranchCode($branch_code)
@@ -143,6 +149,7 @@ abstract class BankAccount extends Entity
 
     /**
      * @param $bank_code
+     *
      * @return $this
      */
     public function setBankCode($bank_code)
@@ -162,6 +169,7 @@ abstract class BankAccount extends Entity
 
     /**
      * @param $iban
+     *
      * @return $this
      */
     public function setIban($iban)
@@ -181,6 +189,7 @@ abstract class BankAccount extends Entity
 
     /**
      * @param $country_code
+     *
      * @return $this
      */
     public function setCountryCode($country_code)
@@ -200,6 +209,7 @@ abstract class BankAccount extends Entity
 
     /**
      * @param $currency
+     *
      * @return $this
      */
     public function setCurrency($currency)

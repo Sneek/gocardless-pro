@@ -1,7 +1,7 @@
-<?php namespace GoCardless\Pro\Exceptions;
+<?php
 
-use Exception;
+namespace GoCardless\Pro\Exceptions;
 
-class InvalidDocumentStructureException extends Exception
+class InvalidDocumentStructureException extends \Exception
 {
 }

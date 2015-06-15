@@ -1,8 +1,5 @@
 <?php
-
 namespace GoCardless\Tests\Models\Traits;
-
-use GoCardless\Pro\Models\Traits\Metadata;
 
 class MetadataTraitTest extends \PHPUnit_Framework_TestCase
 {

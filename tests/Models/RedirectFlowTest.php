@@ -1,8 +1,9 @@
-<?php namespace GoCardless\Pro\Tests\Models;
+<?php
+namespace GoCardless\Pro\Tests\Models;
 
-use GoCardless\Pro\Models\RedirectFlow;
 use GoCardless\Pro\Models\Creditor;
 use GoCardless\Pro\Models\Mandate;
+use GoCardless\Pro\Models\RedirectFlow;
 
 class RedirectFlowTest extends \PHPUnit_Framework_TestCase
 {
@@ -52,25 +53,36 @@ class RedirectFlowTest extends \PHPUnit_Framework_TestCase
     function it_can_be_created_from_an_api_response()
     {
         $redirectFlow = RedirectFlow::fromArray([
-            'id'                        => 'RE123',
-            'created_at'                => '2014-05-08T17:01:06.000Z',
-            'scheme'                    => 'bacs',
-            'session_token'             => 'session_id',
-            'success_redirect_url'      => 'http://www.mywebsite.com/success',
-            'redirect_url'              => 'http://pay.gocardless.dev/flow/RE123',
-            'links'                     => [
-                'creditor'              => 'CR123',
-                'mandate'               => 'MD123',
+            'id'                   => 'RE123',
+            'created_at'           => '2014-05-08T17:01:06.000Z',
+            'scheme'               => 'bacs',
+            'session_token'        => 'session_id',
+            'success_redirect_url' => 'http://www.mywebsite.com/success',
+            'redirect_url'         => 'http://pay.gocardless.dev/flow/RE123',
+            'links'                => [
+                'creditor' => 'CR123',
+                'mandate'  => 'MD123',
             ]
         ]);
 
         $this->assertEquals('RE123', $redirectFlow->getId());
-        $this->assertEquals('2014-05-08T17:01:06.000Z' , $redirectFlow->getCreatedAt());
+        $this->assertEquals('2014-05-08T17:01:06.000Z', $redirectFlow->getCreatedAt());
         $this->assertEquals('bacs', $redirectFlow->getScheme());
         $this->assertEquals('session_id', $redirectFlow->getSessionToken());
         $this->assertEquals('http://www.mywebsite.com/success', $redirectFlow->getSuccessRedirectUrl());
         $this->assertEquals('http://pay.gocardless.dev/flow/RE123', $redirectFlow->getRedirectUrl());
         $this->assertEquals('CR123', $redirectFlow->getLink('creditor'));
         $this->assertEquals('MD123', $redirectFlow->getLink('mandate'));
+    }
+
+    /** @test */
+    function it_can_set_the_success_url()
+    {
+        $redirectFlow = new RedirectFlow;
+
+        $return = $redirectFlow->setSuccessRedirectUrl('http://foo.com/redirect');
+
+        $this->assertSame($redirectFlow, $return);
+        $this->assertEquals('http://foo.com/redirect', $redirectFlow->getSuccessRedirectUrl());
     }
 }

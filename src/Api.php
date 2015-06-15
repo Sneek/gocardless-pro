@@ -1,4 +1,6 @@
-<?php namespace GoCardless\Pro;
+<?php
+
+namespace GoCardless\Pro;
 
 use GoCardless\Pro\Exceptions\AuthenticationException;
 use GoCardless\Pro\Exceptions\InvalidDocumentStructureException;
@@ -117,6 +119,7 @@ class Api
 
     /**
      * @see https://developer.gocardless.com/pro/#creditor-bank-accounts-create-a-creditor-bank-account
+     *
      * @param CreditorBankAccount $account
      *
      * @return CreditorBankAccount
@@ -130,6 +133,7 @@ class Api
 
     /**
      * @see https://developer.gocardless.com/pro/#creditor-bank-accounts-list-creditor-bank-accounts
+     *
      * @param array $options
      *
      * @return array
@@ -185,6 +189,7 @@ class Api
 
     /**
      * @see https://developer.gocardless.com/pro/#customers-update-a-customer
+     *
      * @param Customer $customer
      *
      * @return Customer
@@ -515,7 +520,7 @@ class Api
             $response = $this->client->post(
                 $this->url(self::REDIRECT_FLOWS, $id . '/actions/complete'), [
                     'headers' => $this->headers(),
-                    'json' => ['data' => ['session_token' => $sessionToken]]
+                    'json'    => ['data' => ['session_token' => $sessionToken]]
                 ]
             )->json();
 
@@ -528,7 +533,7 @@ class Api
 
     /**
      * @param string $endpoint
-     * @param array $params
+     * @param array  $params
      * @param string $path
      *
      * @return array
@@ -549,7 +554,7 @@ class Api
 
     /**
      * @param string $endpoint
-     * @param array $data
+     * @param array  $data
      * @param string $path
      *
      * @return array
@@ -561,7 +566,7 @@ class Api
 
     /**
      * @param string $endpoint
-     * @param array $data
+     * @param array  $data
      * @param string $path
      *
      * @return array
@@ -574,7 +579,7 @@ class Api
     /**
      * @param string $method
      * @param string $endpoint
-     * @param array $data
+     * @param array  $data
      * @param string $path
      *
      * @return mixed
@@ -620,6 +625,7 @@ class Api
 
     /**
      * @param array $additional
+     *
      * @return array
      */
     private function headers($additional = [])
@@ -633,7 +639,7 @@ class Api
 
     /**
      * @param Entity $model
-     * @param array $response
+     * @param array  $response
      *
      * @return array
      */
@@ -694,7 +700,7 @@ class Api
 
     /**
      * @param BadResponseException $ex
-     * @param array $response
+     * @param array                $response
      *
      * @throws AuthenticationException
      * @throws InvalidDocumentStructureException

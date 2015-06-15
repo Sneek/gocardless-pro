@@ -1,4 +1,6 @@
-<?php namespace GoCardless\Pro\Models;
+<?php
+
+namespace GoCardless\Pro\Models;
 
 use GoCardless\Pro\Models\Abstracts\BankAccount;
 use GoCardless\Pro\Models\Traits\Metadata;
@@ -13,11 +15,12 @@ class CustomerBankAccount extends BankAccount
     /**
      * Provdes an easy way to set UK bank account details
      *
-     * @param $account_holder_name
-     * @param $account_number
-     * @param $sort_code
-     * @param $country_code
+     * @param          $account_holder_name
+     * @param          $account_number
+     * @param          $sort_code
+     * @param          $country_code
      * @param Customer $owner
+     *
      * @return $this
      */
     public function withAccountDetails(

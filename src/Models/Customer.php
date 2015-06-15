@@ -1,4 +1,6 @@
-<?php namespace GoCardless\Pro\Models;
+<?php
+
+namespace GoCardless\Pro\Models;
 
 use GoCardless\Pro\Models\Abstracts\Party;
 use GoCardless\Pro\Models\Traits\Metadata;
@@ -17,6 +19,7 @@ class Customer extends Party
     /**
      * @param $forename
      * @param $surname
+     *
      * @return Customer
      */
     public function setFullName($forename, $surname)
@@ -36,6 +39,7 @@ class Customer extends Party
 
     /**
      * @param $email
+     *
      * @return Customer
      */
     public function setEmail($email)
@@ -63,6 +67,7 @@ class Customer extends Party
 
     /**
      * @param $given_name
+     *
      * @return Customer
      */
     public function setGivenName($given_name)
@@ -98,6 +103,7 @@ class Customer extends Party
 
     /**
      * @param $family_name
+     *
      * @return Customer
      */
     public function setFamilyName($family_name)
@@ -117,6 +123,7 @@ class Customer extends Party
 
     /**
      * @param $name
+     *
      * @return Customer
      */
     public function setForename($name)
@@ -126,6 +133,7 @@ class Customer extends Party
 
     /**
      * @param $name
+     *
      * @return Customer
      */
     public function setFirstName($name)
@@ -135,6 +143,7 @@ class Customer extends Party
 
     /**
      * @param $surname
+     *
      * @return Customer
      */
     public function setSurname($surname)
@@ -144,6 +153,7 @@ class Customer extends Party
 
     /**
      * @param $last_name
+     *
      * @return Customer
      */
     public function setLastName($last_name)

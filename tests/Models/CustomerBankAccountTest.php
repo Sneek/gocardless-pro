@@ -1,4 +1,5 @@
-<?php namespace GoCardless\Pro\Tests\Models;
+<?php
+namespace GoCardless\Pro\Tests\Models;
 
 use GoCardless\Pro\Models\Customer;
 use GoCardless\Pro\Models\CustomerBankAccount;
@@ -20,7 +21,7 @@ class CustomerBankAccountTest extends \PHPUnit_Framework_TestCase
     /** @test */
     function it_has_a_shortcut_to_fill_uk_bank_details()
     {
-        $account = new CustomerBankAccount;
+        $account  = new CustomerBankAccount;
         $customer = new Customer;
 
         $account->withAccountDetails('John Doe', '12345678', '112233', 'GB', $customer);

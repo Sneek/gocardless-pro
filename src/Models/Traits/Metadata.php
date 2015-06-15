@@ -13,27 +13,12 @@ trait Metadata
     protected $metadata = [];
 
     /**
-     * Sets an entire metadata array
-     *
-     * @param array $metadata Metadata to set
-     *
-     * @return Entity
-     */
-    public function setMetadata(array $metadata)
-    {
-        foreach ($metadata as $key => $val) {
-            $this->addMetadata($key, $val);
-        }
-
-        return $this;
-    }
-
-    /**
      * Get the current metadata
      *
      * Optionally specify a single key to retrieve
      *
      * @param null $key
+     *
      * @return array
      */
     public function getMetadata($key = null)
@@ -50,15 +35,19 @@ trait Metadata
     }
 
     /**
-     * Check if metadata key exists
+     * Sets an entire metadata array
      *
-     * @param string $key Meta key
+     * @param array $metadata Metadata to set
      *
-     * @return boolean
+     * @return Entity
      */
-    public function metadataExists($key)
+    public function setMetadata(array $metadata)
     {
-        return isset($this->metadata[$key]);
+        foreach ($metadata as $key => $val) {
+            $this->addMetadata($key, $val);
+        }
+
+        return $this;
     }
 
     /**
@@ -74,22 +63,6 @@ trait Metadata
         $this->validateMetaItem($key, $val);
 
         $this->metadata[$key] = $val;
-
-        return $this;
-    }
-
-    /**
-     * Remove an item of meta
-     *
-     * @param string $key Meta key
-     *
-     * @return Entity
-     */
-    public function removeMetadata($key)
-    {
-        if (isset($this->metadata[$key])) {
-            unset($this->metadata[$key]);
-        }
 
         return $this;
     }
@@ -116,5 +89,33 @@ trait Metadata
         if (mb_strlen($val) > 200) {
             throw new \InvalidArgumentException('Metadata value must be 200 characters or less');
         }
+    }
+
+    /**
+     * Check if metadata key exists
+     *
+     * @param string $key Meta key
+     *
+     * @return boolean
+     */
+    public function metadataExists($key)
+    {
+        return isset($this->metadata[$key]);
+    }
+
+    /**
+     * Remove an item of meta
+     *
+     * @param string $key Meta key
+     *
+     * @return Entity
+     */
+    public function removeMetadata($key)
+    {
+        if (isset($this->metadata[$key])) {
+            unset($this->metadata[$key]);
+        }
+
+        return $this;
     }
 }

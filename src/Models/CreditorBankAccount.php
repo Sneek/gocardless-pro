@@ -1,4 +1,6 @@
-<?php namespace GoCardless\Pro\Models;
+<?php
+
+namespace GoCardless\Pro\Models;
 
 use GoCardless\Pro\Models\Abstracts\BankAccount;
 use GoCardless\Pro\Models\Traits\Metadata;

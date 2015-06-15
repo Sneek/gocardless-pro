@@ -1,7 +1,7 @@
-<?php namespace GoCardless\Pro\Exceptions;
+<?php
 
-use Exception;
+namespace GoCardless\Pro\Exceptions;
 
-class ResourceNotFoundException extends Exception
+class ResourceNotFoundException extends \Exception
 {
 }

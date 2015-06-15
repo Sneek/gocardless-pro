@@ -1,4 +1,5 @@
-<?php namespace GoCardless\Pro\Tests\Exceptions;
+<?php
+namespace GoCardless\Pro\Tests\Exceptions;
 
 use GoCardless\Pro\Exceptions\VersionNotFoundException;
 

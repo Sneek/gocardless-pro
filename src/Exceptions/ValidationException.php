@@ -1,4 +1,6 @@
-<?php namespace GoCardless\Pro\Exceptions;
+<?php
+
+namespace GoCardless\Pro\Exceptions;
 
 class ValidationException extends \Exception
 {
@@ -10,7 +12,7 @@ class ValidationException extends \Exception
     public function __construct($message, $errors)
     {
         $this->message = $message;
-        $this->errors = $errors;
+        $this->errors  = $errors;
     }
 
     public function getErrors()

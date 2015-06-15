@@ -1,4 +1,6 @@
-<?php namespace GoCardless\Pro\Models;
+<?php
+
+namespace GoCardless\Pro\Models;
 
 use GoCardless\Pro\Models\Abstracts\Entity;
 use GoCardless\Pro\Models\Traits\Factory;
@@ -30,6 +32,7 @@ class Payment extends Entity
     /**
      * @param $amount
      * @param $currency
+     *
      * @return $this
      */
     public function collect($amount, $currency)
@@ -39,6 +42,7 @@ class Payment extends Entity
 
     /**
      * @param Mandate $mandate
+     *
      * @return Payment
      */
     public function using(Mandate $mandate)
@@ -48,6 +52,7 @@ class Payment extends Entity
 
     /**
      * @param Mandate $mandate
+     *
      * @return $this
      */
     public function setMandate(Mandate $mandate)
@@ -59,6 +64,7 @@ class Payment extends Entity
 
     /**
      * @param $date
+     *
      * @return Payment
      */
     public function on($date)
@@ -76,6 +82,7 @@ class Payment extends Entity
 
     /**
      * @param $date
+     *
      * @return $this
      */
     public function setChargeDate($date)
@@ -95,6 +102,7 @@ class Payment extends Entity
 
     /**
      * @param $amount
+     *
      * @return $this
      */
     public function setAmount($amount)
@@ -114,6 +122,7 @@ class Payment extends Entity
 
     /**
      * @param $currency
+     *
      * @return $this
      */
     public function setCurrency($currency)
@@ -133,6 +142,7 @@ class Payment extends Entity
 
     /**
      * @param $description
+     *
      * @return $this
      */
     public function setDescription($description)
@@ -213,15 +223,16 @@ class Payment extends Entity
     {
         return $this->reference;
     }
-    
+
     /**
      * @param $reference
+     *
      * @return $this
      */
     public function setReference($reference)
     {
         $this->reference = $reference;
-        
+
         return $this;
     }
 

@@ -1,4 +1,6 @@
-<?php namespace GoCardless\Pro\Models\Abstracts;
+<?php
+
+namespace GoCardless\Pro\Models\Abstracts;
 
 use GoCardless\Pro\Models\Customer;
 use GoCardless\Pro\Models\Traits\Factory;
@@ -27,6 +29,7 @@ abstract class Party extends Entity
      * @param $city
      * @param $postal_code
      * @param $country_code
+     *
      * @return Customer
      */
     public function setAddress($street, $city, $postal_code, $country_code)
@@ -102,6 +105,7 @@ abstract class Party extends Entity
 
     /**
      * @param $street
+     *
      * @return Customer
      */
     public function setStreet($street)
@@ -111,6 +115,7 @@ abstract class Party extends Entity
 
     /**
      * @param $address_line1
+     *
      * @return Customer
      */
     public function setAddressLine1($address_line1)
@@ -122,6 +127,7 @@ abstract class Party extends Entity
 
     /**
      * @param $address_line2
+     *
      * @return Customer
      */
     public function setAddressLine2($address_line2)
@@ -133,6 +139,7 @@ abstract class Party extends Entity
 
     /**
      * @param $address_line3
+     *
      * @return Customer
      */
     public function setAddressLine3($address_line3)
@@ -144,6 +151,7 @@ abstract class Party extends Entity
 
     /**
      * @param $city
+     *
      * @return Customer
      */
     public function setCity($city)
@@ -155,6 +163,7 @@ abstract class Party extends Entity
 
     /**
      * @param $region
+     *
      * @return Customer
      */
     public function setRegion($region)
@@ -166,6 +175,7 @@ abstract class Party extends Entity
 
     /**
      * @param $postal_code
+     *
      * @return Customer
      */
     public function setPostalCode($postal_code)
@@ -177,6 +187,7 @@ abstract class Party extends Entity
 
     /**
      * @param $country_code
+     *
      * @return Customer
      */
     public function setCountryCode($country_code)

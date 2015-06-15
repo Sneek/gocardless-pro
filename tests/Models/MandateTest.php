@@ -1,4 +1,5 @@
-<?php namespace GoCardless\Pro\Tests\Models;
+<?php
+namespace GoCardless\Pro\Tests\Models;
 
 use GoCardless\Pro\Models\Creditor;
 use GoCardless\Pro\Models\CustomerBankAccount;

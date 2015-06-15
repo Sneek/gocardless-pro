@@ -1,4 +1,6 @@
-<?php namespace GoCardless\Pro\Models\Abstracts;
+<?php
+
+namespace GoCardless\Pro\Models\Abstracts;
 
 abstract class Entity
 {
@@ -68,7 +70,7 @@ abstract class Entity
      */
     public function getLink($link)
     {
-        if (!isset($this->links[$link])) {
+        if ( ! isset($this->links[$link])) {
             return null;
         }
 
