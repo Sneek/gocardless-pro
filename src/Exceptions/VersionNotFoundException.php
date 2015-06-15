@@ -2,6 +2,6 @@
 
 namespace GoCardless\Pro\Exceptions;
 
-class VersionNotFoundException extends \Exception
+class VersionNotFoundException extends InvalidApiUsageException
 {
 }

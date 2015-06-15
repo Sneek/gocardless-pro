@@ -2,6 +2,6 @@
 
 namespace GoCardless\Pro\Exceptions;
 
-class AuthenticationException extends \Exception
+class AuthenticationException extends InvalidApiUsageException
 {
 }

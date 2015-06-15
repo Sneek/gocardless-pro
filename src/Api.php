@@ -669,17 +669,13 @@ class Api
 
         switch ($response['error']['type']) {
             case 'invalid_state' :
-                throw new InvalidStateException(
-                    $response['error']['message'],
-                    $response['error']['code'],
-                    $response['error']['errors']
-                );
+                $this->throwInvalidStateException($response);
 
             case 'validation_failed' :
-                $this->handleValidationFailedErrors($response);
+                $this->throwValidationException($response);
 
             case 'invalid_api_usage' :
-                $this->handleInvalidApiUsage($ex, $response);
+                $this->throwInvalidApiUsageException($ex, $response);
         }
 
         throw $ex;
@@ -690,7 +686,7 @@ class Api
      *
      * @throws ValidationException
      */
-    private function handleValidationFailedErrors(array $response)
+    private function throwValidationException(array $response)
     {
         throw new ValidationException(
             $response['error']['message'],
@@ -707,7 +703,7 @@ class Api
      * @throws ResourceNotFoundException
      * @throws VersionNotFoundException
      */
-    private function handleInvalidApiUsage(BadResponseException $ex, array $response)
+    private function throwInvalidApiUsageException(BadResponseException $ex, array $response)
     {
         switch ($response['error']['errors'][0]['reason']) {
             case 'resource_not_found' :
@@ -732,5 +728,19 @@ class Api
                     $ex->getCode()
                 );
         }
+    }
+
+    /**
+     * @param $response
+     *
+     * @throws InvalidStateException
+     */
+    private function throwInvalidStateException($response)
+    {
+        throw new InvalidStateException(
+            $response['error']['message'],
+            $response['error']['code'],
+            $response['error']['errors']
+        );
     }
 }

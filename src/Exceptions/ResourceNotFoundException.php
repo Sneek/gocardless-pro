@@ -2,6 +2,6 @@
 
 namespace GoCardless\Pro\Exceptions;
 
-class ResourceNotFoundException extends \Exception
+class ResourceNotFoundException extends InvalidApiUsageException
 {
 }
