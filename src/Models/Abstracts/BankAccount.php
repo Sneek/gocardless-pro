@@ -172,6 +172,14 @@ abstract class BankAccount extends Entity
     }
 
     /**
+     * @return boolean
+     */
+    public function hasIban()
+    {
+        return !!$this->iban;
+    }
+
+    /**
      * @return string
      */
     public function getCountryCode()
