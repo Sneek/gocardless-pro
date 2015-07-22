@@ -14,6 +14,7 @@ use GoCardless\Pro\Models\CustomerBankAccount;
 use GoCardless\Pro\Models\Mandate;
 use GoCardless\Pro\Models\Payment;
 use GoCardless\Pro\Models\RedirectFlow;
+use GoCardless\Pro\Models\Subscription;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\BadResponseException;
 
@@ -27,6 +28,7 @@ class Api
     const PAYMENTS               = 'payments';
     const REDIRECT_FLOWS         = 'redirect_flows';
     const HELPERS                = 'helpers';
+    const SUBSCRIPTIONS          = 'subscriptions';
 
     const SANDBOX_URL    = 'https://api-sandbox.gocardless.com/';
     const PRODUCTION_URL = 'https://api.gocardless.com/';
@@ -418,6 +420,62 @@ class Api
     }
 
     /**
+     * Modulus Check on bank account
+     * Checks the if bank details are valid and returns the api message.
+     *
+     * https://developer.gocardless.com/pro/#helpers-mandate-pdf
+     *
+     * @param CustomerBankAccount $account
+     *
+     * @return string
+     */
+    public function modulusCheck(CustomerBankAccount $account)
+    {
+        $endpoint = self::HELPERS;
+        $path     = 'modulus_check';
+        $headers  = $this->headers();
+
+        try {
+            $payload = [
+                'data' =>
+                    [
+                        'account_number' => $account->getAccountNumber(),
+                        'branch_code' => $account->getBranchCode(),
+                        'country_code' => $account->getCountryCode()
+                    ]
+            ];
+
+            $response = $this->client->post($this->url($endpoint, $path), [
+                'headers' => $headers,
+                'json'    => $payload
+            ]);
+
+            return true;
+
+        } catch (BadResponseException $ex) {
+            if ($ex->getResponse()->getStatusCode() !== 422) {
+                return 'Error - There was an error checking if the account number was valid - ' . $ex->getMessage();
+            }
+
+            $data = $ex->getResponse()->json();
+
+            $message = '';
+
+            foreach($data['error']['errors'] as $error) {
+                if ($error['field'] === 'branch_code') {
+                    $error['field'] = 'sort_code';
+                }
+
+                $field = ucwords(str_replace('_', ' ', $error['field']));
+                $message .= $field . ' ' . $error['message'];
+            }
+
+            return 'Invalid - ' . $message;
+        }
+
+    }
+
+    /**
      * @see https://developer.gocardless.com/pro/#payments-create-a-payment
      *
      * @param Payment $payment
@@ -472,6 +530,78 @@ class Api
 
         return Payment::fromArray($response);
     }
+
+    /**
+     * @see https://developer.gocardless.com/pro/#subscriptions-create-a-subscription
+     *
+     * @param Subscription $subscription
+     *
+     * @return Subscription
+     */
+    public function createSubscription(Subscription $subscription)
+    {
+        $response = $this->post(self::SUBSCRIPTIONS, $subscription->toArray());
+
+        return Subscription::fromArray($response);
+    }
+
+    /**
+     * @see https://developer.gocardless.com/pro/#subscriptions-list-subscriptions
+     *
+     * @param array $options
+     *
+     * @return array
+     */
+    public function listSubscriptions($options = [])
+    {
+        $response = $this->get(self::SUBSCRIPTIONS, $options);
+
+        return $this->buildCollection(new Subscription, $response);
+    }
+
+    /**
+     * @see https://developer.gocardless.com/pro/#subscriptions-get-a-single-subscription
+     *
+     * @param $id
+     *
+     * @return Subscription
+     */
+    public function getSubscription($id)
+    {
+        $response = $this->get(self::SUBSCRIPTIONS, [], $id);
+
+        return Subscription::fromArray($response);
+    }
+
+
+    /**
+     * @see https://developer.gocardless.com/pro/#subscriptions-update-a-subscription
+     *
+     * @param Subscription $subscription
+     *
+     * @return Subscription
+     */
+    public function updateSubscription(Subscription $subscription)
+    {
+        $response = $this->put(self::SUBSCRIPTIONS, $subscription->toArrayForUpdating(), $subscription->getId());
+
+        return Subscription::fromArray($response);
+    }
+
+    /**
+     * @see https://developer.gocardless.com/pro/#subscriptions-cancel-a-subscription
+     *
+     * @param $id
+     *
+     * @return Subscription
+     */
+    public function cancelSubscription($id)
+    {
+        $response = $this->post(self::SUBSCRIPTIONS, [], $id . '/actions/cancel');
+
+        return Subscription::fromArray($response);
+    }
+
 
     /**
      * @see https://developer.gocardless.com/pro/#redirect-flows-create-a-redirect-flow

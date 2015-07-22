@@ -7,6 +7,7 @@ use GoCardless\Pro\Models\Customer;
 use GoCardless\Pro\Models\CustomerBankAccount;
 use GoCardless\Pro\Models\Mandate;
 use GoCardless\Pro\Models\Payment;
+use GoCardless\Pro\Models\Subscription;
 use GuzzleHttp\Client;
 
 class ApiTest extends \PHPUnit_Framework_TestCase
@@ -379,6 +380,68 @@ class ApiTest extends \PHPUnit_Framework_TestCase
         return $payment;
     }
 
+    /** @depends test_it_can_create_a_mandate */
+    function test_it_can_create_a_subscription(Mandate $mandate)
+    {
+        $subscription = (new Subscription())
+            ->collect(1000, 'GBP')
+            ->everyMonth()
+            ->using($mandate);
+
+        $subscription = $this->api->createSubscription($subscription);
+
+        $this->assertInstanceOf('GoCardless\Pro\Models\Subscription', $subscription);
+        $this->assertNotNull($subscription->getId());
+        $this->assertNotNull($subscription->getCreatedAt());
+        $this->assertNotNull($subscription->getStartAt());
+        $this->assertTrue($subscription->isActive());
+        $this->assertSame(1000, $subscription->getAmount());
+        $this->assertSame('GBP', $subscription->getCurrency());
+
+        return $subscription;
+    }
+
+    /** @test */
+    function it_can_list_subscriptions()
+    {
+        $subscriptions = $this->api->listSubscriptions();
+
+        $this->assertInternalType('array', $subscriptions);
+        foreach ($subscriptions as $subscription) {
+            $this->assertInstanceOf('GoCardless\Pro\Models\CustomerBankAccount', $subscription);
+        }
+    }
+
+    /** @depends test_it_can_create_a_subscription */
+    function test_it_can_get_a_single_subscription(Subscription $old)
+    {
+        $new = $this->api->getSubscription($old->getId());
+
+        $this->assertEquals($old->toArray(), $new->toArray());
+
+        return $new;
+    }
+
+    /** @depends test_it_can_get_a_single_subscription */
+    function test_it_can_update_a_subscription(Subscription $subscription)
+    {
+        $subscription->setName('Not So Nude Wines');
+
+        $notSoNudeWines = $this->api->updateSubscription($subscription);
+
+        $this->assertEquals('Not So Nude Wines', $notSoNudeWines->getName());
+    }
+
+    /** @depends test_it_can_create_a_subscription */
+    function test_it_can_cancel_subscriptions(Subscription $subscription)
+    {
+        $subscription = $this->api->cancelSubscription($subscription->getId());
+
+        $this->assertTrue($subscription->isCancelled());
+
+        return $subscription;
+    }
+
     /** @group Exceptions */
     function test_it_throws_an_exception_if_the_creditor_is_not_found()
     {
@@ -449,6 +512,18 @@ class ApiTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->api->getPayment('1234');
+    }
+
+    /** @group Exceptions */
+    function test_it_throws_an_exception_if_a_subscription_is_not_found()
+    {
+        $this->setExpectedException(
+            'GoCardless\Pro\Exceptions\ResourceNotFoundException',
+            'Resource not found at /subscriptions/1234',
+            404
+        );
+
+        $this->api->getSubscription('1234');
     }
 
     /** @group Exceptions */
@@ -543,5 +618,12 @@ class ApiTest extends \PHPUnit_Framework_TestCase
         if (count($this->api->listMandates()) < 5) {
             $this->markTestSkipped('Skipping test due to lack of mandates in system. This test requires at least 5.');
         }
+    }
+
+    /** @test */
+    /** only requires account number, branch code (sort code) and country code to be set*/
+    public function it_returns_modulus_check(CustomerBankAccount $account)
+    {
+        $this->api->modulusCheck($account);
     }
 }

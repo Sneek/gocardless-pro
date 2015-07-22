@@ -1,10 +1,18 @@
 {
-    "name": "sneek/gocardless-pro",
+    "name": "shinkyu/gocardless-pro",
     "description": "A client for the GoCardless Pro API",
     "keywords": ["GoCardless", "GoCardless Pro", "Direct Debit"],
     "license": "MIT",
-    "homepage": "https://github.com/Sneek/gocardless-pro",
+    "homepage": "https://github.com/ShinkyuMartialArts/gocardless-pro",
     "authors": [
+        {
+            "name": "Toyin Butler",
+            "email": "toyin@shinkyukarate.com"
+        },
+        {
+            "name": "Adam Lavin",
+            "email": "adam@lavoaster.co.uk"
+        },
         {
             "name": "Cristian Giordano",
             "email": "developers@sneekdigital.co.uk"
