@@ -522,13 +522,15 @@ class Api
                     'headers' => $this->headers(),
                     'json'    => ['data' => ['session_token' => $sessionToken]]
                 ]
-            )->json();
+            );
+
+            $response = json_decode($response->getBody(), true);
+
+            return RedirectFlow::fromArray($response[self::REDIRECT_FLOWS]);
 
         } catch (BadResponseException $ex) {
             $this->handleBadResponseException($ex);
         }
-
-        return RedirectFlow::fromArray($response[self::REDIRECT_FLOWS]);
     }
 
     /**
@@ -544,12 +546,15 @@ class Api
             $response = $this->client->get($this->url($endpoint, $path), [
                 'headers' => $this->headers(),
                 'query'   => $params
-            ])->json();
+            ]);
+
+            $response = json_decode($response->getBody(), true);
+
+            return $response[$endpoint];
+
         } catch (BadResponseException $ex) {
             $this->handleBadResponseException($ex);
         }
-
-        return $response[$endpoint];
     }
 
     /**
@@ -594,12 +599,15 @@ class Api
             $response = $this->client->$method($this->url($endpoint, $path), [
                 'headers' => $this->headers(),
                 'json'    => $payload
-            ])->json();
+            ]);
+
+            $response = json_decode($response->getBody(), true);
+
+            return $response[$endpoint];
+
         } catch (BadResponseException $ex) {
             $this->handleBadResponseException($ex);
         }
-
-        return $response[$endpoint];
     }
 
     /**
@@ -665,7 +673,7 @@ class Api
      */
     private function handleBadResponseException(BadResponseException $ex)
     {
-        $response = $ex->getResponse()->json();
+        $response = json_decode($ex->getResponse()->getBody()->getContents(), true);
 
         switch ($response['error']['type']) {
             case 'invalid_state' :
@@ -708,7 +716,7 @@ class Api
         switch ($response['error']['errors'][0]['reason']) {
             case 'resource_not_found' :
                 throw new ResourceNotFoundException(
-                    sprintf('Resource not found at %s', $ex->getRequest()->getResource()),
+                    sprintf('Resource not found at %s', $ex->getRequest()->getRequestTarget()),
                     $ex->getCode()
                 );
             case 'version_not_found' :
