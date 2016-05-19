@@ -4,7 +4,8 @@
  * This configuration is only needed for running tests.
  */
 return [
-    'version'             => '2015-04-29',
+    'version'             => '2015-07-06',
     'accessToken'         => '',
     'readOnlyAccessToken' => '',
+    'paymentToRefund'     => '',
 ];

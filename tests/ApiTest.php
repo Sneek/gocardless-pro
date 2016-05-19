@@ -7,6 +7,7 @@ use GoCardless\Pro\Models\Customer;
 use GoCardless\Pro\Models\CustomerBankAccount;
 use GoCardless\Pro\Models\Mandate;
 use GoCardless\Pro\Models\Payment;
+use GoCardless\Pro\Models\Refund;
 use GuzzleHttp\Client;
 
 class ApiTest extends \PHPUnit_Framework_TestCase
@@ -369,6 +370,35 @@ class ApiTest extends \PHPUnit_Framework_TestCase
         return $new;
     }
 
+    /** @test */
+    function it_returns_a_list_of_payments()
+    {
+        $payments = $this->api->listPayments();
+
+        $this->assertInternalType('array', $payments);
+        foreach ($payments as $payment) {
+            $this->assertInstanceOf('GoCardless\Pro\Models\Payment', $payment);
+        }
+    }
+
+    function test_it_can_create_a_refund()
+    {
+        $this->guardAgainstInvalidPaymentToRefund();
+
+        $config = require __DIR__ . '/../config.php';
+
+        $payment = $this->api->getPayment($config['paymentToRefund']);
+        $refund = (new Refund())->of($payment)->returning($payment->getAmount())->totalling($payment->getAmount());
+
+        $refund = $this->api->createRefund($refund);
+
+        $this->assertInstanceOf('GoCardless\Pro\Models\Refund', $refund);
+        $this->assertNotNull($refund->getId());
+        $this->assertNotNull($refund->getCreatedAt());
+        $this->assertSame($payment->getAmount(), $refund->getAmount());
+        $this->assertSame('GBP', $refund->getCurrency());
+    }
+
     /** @depends test_it_can_get_a_single_payment */
     function test_it_can_cancel_payments(Payment $payment)
     {
@@ -542,6 +572,21 @@ class ApiTest extends \PHPUnit_Framework_TestCase
     {
         if (count($this->api->listMandates()) < 5) {
             $this->markTestSkipped('Skipping test due to lack of mandates in system. This test requires at least 5.');
+        }
+    }
+
+    private function guardAgainstInvalidPaymentToRefund()
+    {
+        $config = require __DIR__ . '/../config.php';
+
+        if ( ! isset($config['paymentToRefund']) or $config['paymentToRefund'] == '') {
+            $this->markTestSkipped('Skipping test due to [paymentToRefund] was not set in the config');
+        }
+
+        $payment = $this->api->getPayment($config['paymentToRefund']);
+
+        if ( ! $payment->isConfirmed() or ! $payment->isPaidOut()) {
+            $this->markTestSkipped('Skipping test due to payment status is not confirmed or paid_out');
         }
     }
 }

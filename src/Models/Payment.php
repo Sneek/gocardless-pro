@@ -33,7 +33,7 @@ class Payment extends Entity
      * @param $amount
      * @param $currency
      *
-     * @return $this
+     * @return Payment
      */
     public function collect($amount, $currency)
     {
@@ -53,7 +53,7 @@ class Payment extends Entity
     /**
      * @param Mandate $mandate
      *
-     * @return $this
+     * @return Payment
      */
     public function setMandate(Mandate $mandate)
     {
@@ -83,7 +83,7 @@ class Payment extends Entity
     /**
      * @param $date
      *
-     * @return $this
+     * @return Payment
      */
     public function setChargeDate($date)
     {
@@ -103,7 +103,7 @@ class Payment extends Entity
     /**
      * @param $amount
      *
-     * @return $this
+     * @return Payment
      */
     public function setAmount($amount)
     {
@@ -123,7 +123,7 @@ class Payment extends Entity
     /**
      * @param $currency
      *
-     * @return $this
+     * @return Payment
      */
     public function setCurrency($currency)
     {
@@ -143,7 +143,7 @@ class Payment extends Entity
     /**
      * @param $description
      *
-     * @return $this
+     * @return Payment
      */
     public function setDescription($description)
     {
@@ -227,7 +227,7 @@ class Payment extends Entity
     /**
      * @param $reference
      *
-     * @return $this
+     * @return Payment
      */
     public function setReference($reference)
     {
