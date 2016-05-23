@@ -467,6 +467,20 @@ class Api
     }
 
     /**
+     * @see https://developer.gocardless.com/pro/#refunds-get-a-single-refund
+     *
+     * @param $id
+     *
+     * @return Refund
+     */
+    public function getRefund($id)
+    {
+        $response = $this->get(self::REFUNDS, [], $id);
+
+        return Refund::fromArray($response);
+    }
+
+    /**
      * @see https://developer.gocardless.com/pro/#payments-list-payments
      *
      * @param array $options
