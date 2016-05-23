@@ -14,6 +14,7 @@ use GoCardless\Pro\Models\CreditorBankAccount;
 use GoCardless\Pro\Models\Customer;
 use GoCardless\Pro\Models\CustomerBankAccount;
 use GoCardless\Pro\Models\Mandate;
+use GoCardless\Pro\Models\MandatePdf;
 use GoCardless\Pro\Models\Payment;
 use GoCardless\Pro\Models\RedirectFlow;
 use GoCardless\Pro\Models\Refund;
@@ -30,7 +31,8 @@ class Api
     const PAYMENTS               = 'payments';
     const REFUNDS                = 'refunds';
     const REDIRECT_FLOWS         = 'redirect_flows';
-    const HELPERS                = 'helpers';
+    const MANDATE_PDFS           = 'mandate_pdfs';
+    const BANK_DETAILS_LOOKUPS   = 'bank_details_lookups';
 
     const SANDBOX_URL    = 'https://api-sandbox.gocardless.com/';
     const PRODUCTION_URL = 'https://api.gocardless.com/';
@@ -360,71 +362,6 @@ class Api
     }
 
     /**
-     * Create a Mandate PDF
-     *
-     * Returns a PDF mandate form with a signature field, ready to
-     * be signed by your customer. May be fully or partially pre-filled.
-     *
-     * @see https://developer.gocardless.com/pro/#helpers-mandate-pdf
-     *
-     * @param array $options Endpoint options (for prefilling mandate)
-     *
-     * @return \GuzzleHttp\Stream\StreamInterface
-     */
-    public function createMandatePdf($options = [])
-    {
-        $endpoint = self::HELPERS;
-        $path     = '/mandate';
-        $headers  = $this->headers(['Accept' => 'application/pdf']);
-
-        try {
-            $payload = ['data' => $options];
-
-            $response = $this->client->post($this->url($endpoint, $path), [
-                'headers' => $headers,
-                'json'    => $payload
-            ]);
-        } catch (BadResponseException $ex) {
-            $this->handleBadResponseException($ex);
-        }
-
-        return $response->getBody();
-    }
-
-    /**
-     * Get Mandate PDF
-     *
-     * Return a PDF complying to the relevant scheme rules,
-     * which you can present to your customer.
-     *
-     * @see https://developer.gocardless.com/pro/#mandates-get-a-single-mandate
-     *
-     * @param string|Mandate $id Mandate ID e.g. MD123 or a Mandate object
-     *
-     * @return \GuzzleHttp\Stream\StreamInterface
-     */
-    public function getMandatePdf($id)
-    {
-        if ($id instanceof Mandate) {
-            $id = $id->getId();
-        }
-
-        $endpoint = self::MANDATES;
-        $path     = $id;
-        $headers  = $this->headers(['Accept' => 'application/pdf']);
-
-        try {
-            $response = $this->client->get($this->url($endpoint, $path), [
-                'headers' => $headers
-            ]);
-        } catch (BadResponseException $ex) {
-            $this->handleBadResponseException($ex);
-        }
-
-        return $response->getBody();
-    }
-
-    /**
      * @see https://developer.gocardless.com/pro/#payments-create-a-payment
      *
      * @param Payment $payment
@@ -578,6 +515,62 @@ class Api
     }
 
     /**
+     * Get Mandate PDF
+     *
+     * Generates a PDF mandate and returns its temporary URL.
+     *
+     * @see https://developer.gocardless.com/pro/#mandate-pdfs-create-a-mandate-pdf
+     *
+     * @param MandatePdf $mandatePdf MandatePdf model
+     *
+     * @return MandatePdf
+     */
+    public function createMandatePdf(MandatePdf $mandatePdf)
+    {
+        $response = $this->post(self::MANDATE_PDFS, $mandatePdf->toArray());
+
+        return MandatePdf::fromArray($response);
+    }
+
+    /**
+     * Look up the name and reachability of a bank.
+     *
+     * @see https://developer.gocardless.com/pro/#helper-endpoints-bank-details-lookups
+     *
+     * @param CustomerBankAccount $account Customer Bank Account
+     *
+     * @return array
+     */
+    public function lookupBankDetails(CustomerBankAccount $account)
+    {
+        $request = ['iban' => $account->getIban()];
+
+        if (!$account->hasIban()) {
+            $request = [
+                'account_number' => $account->getAccountNumber(),
+                'branch_code'    => $account->getBranchCode(),
+                'country_code'   => $account->getCountryCode()
+            ];
+        }
+
+        return $this->post(self::BANK_DETAILS_LOOKUPS, $request);
+    }
+
+    /**
+     * Parses a date string from GoCardless and returns a DateTime
+     *
+     * @param string $date Date in go cardless format
+     *
+     * @return \DateTime
+     */
+    public function parseDate($date)
+    {
+        $timezone   = new \DateTimeZone('UTC');
+
+        return \DateTime::createFromFormat('Y-m-d\TH:i:s.u\Z', $date, $timezone);
+    }
+
+    /**
      * @param string $endpoint
      * @param array  $params
      * @param string $path
@@ -620,7 +613,7 @@ class Api
      *
      * @return array
      */
-    public function put($endpoint, $data = [], $path = null)
+    private function put($endpoint, $data = [], $path = null)
     {
         return $this->send('put', $endpoint, $data, $path);
     }

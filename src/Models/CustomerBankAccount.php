@@ -26,13 +26,13 @@ class CustomerBankAccount extends BankAccount
     public function withAccountDetails(
         $account_holder_name,
         $account_number,
-        $sort_code,
+        $branch_code,
         $country_code,
         Customer $owner
     ) {
         return $this->setAccountHolderName($account_holder_name)
             ->setAccountNumber($account_number)
-            ->setSortCode($sort_code)
+            ->setBranchCode($sort_code)
             ->setCountryCode($country_code)
             ->setOwner($owner);
     }
